@@ -13,9 +13,9 @@ The current `/register` replica is not a 1:1 match of Figma node `500:1077`. The
 ## 2. Ground truth (locked)
 
 - The visual baseline is Figma node `500:1077` exported once via the Framelink Exporter plugin (root-frame PNG @2x, 2880×1700; harness screenshots at matching deviceScaleFactor). It supersedes all prior caches.
-- Geometry reference: `figma-local` `get_figma_file(ids=500:1077)` node tree (two panels: center form INSTANCE 474×571 at x15635 y271 + right panel `Group 20` 710×850 `#1A1822`). Raw JSON geometrically contains a stray `Frame 45` sidebar child; it is explicitly excluded as contamination — the approved page is two panels only.
+- Geometry reference: Framelink Exporter JSON for `500:1077` (two visible panels: center form INSTANCE 474×571 + right panel `Group 20` 710×850 `#1A1922`). The JSON geometrically contains `Frame 45` (id `500:1080`, `visible=false`); it is excluded as contamination — the approved page is two panels only.
 - Text content (8 strings, all Inter): `Create your free account` (36px/800/-1.08, white, center); `Access the world's most iconic voices in studio quality, The industry standard for high-fidelity celebrity voice clones.` (14px/400, `#DEDEE5`, center); `Continue with Google` (18px/500, `#EFEFF7`); `or` (16px/500, `#B3B3BC`); `Enter email address` placeholder (16px/500, `#B3B3BC`); `Continue` (18px/600, `#07070D` on `#EFEFF7` pill); legal line (14px/600/-0.7, `#C8C8D1`); `Already have an account? Log in` (16px/600, `#EFEFF7`).
-- Layout tokens: Frame 89 vertical gap48; Frame 88 vertical gap24; Frame 87 vertical gap16; Google button 474×46 radius99 1px `#9E9EA8` transparent; divider 210px rules `#B3B3BC` gap19; email input 474×51 `#1A1A23` radius16; Continue 474×51 `#EFEFF7` radius89.1; right panel `#1A1822`; page bg `#07070D`.
+- Layout tokens: Frame 89 vertical gap48; Frame 88 vertical gap24; Frame 87 vertical gap16; Google button 474×46 radius99 1px `#9E9EA8` transparent; divider 210px rules `#B3B3BC` gap19; email input 474×51 `#1A1A23` radius16; Continue 474×51 `#EFEFF7` radius89.1; right panel `#1A1922`; page bg `#07070D`.
 
 ## 3. Hard rules (user-locked)
 

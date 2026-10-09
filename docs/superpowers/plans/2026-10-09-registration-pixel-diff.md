@@ -17,10 +17,10 @@
 | `specs/001-user-registration/export/` (create, unpacked ZIP working dir) | Raw Framelink Exporter output: `<file>.json` + `<file>.assets/` (`node_*.png`, `icon_*.svg`, `image_*.png`) + `framelinkExport` manifest |
 | `specs/001-user-registration/baseline/reference.png` (create) | Root-frame PNG from the export ZIP (@2x, 2880×1700) — the only diff baseline |
 | `specs/001-user-registration/baseline/manifest.json` (create) | Export provenance: node id, export date, ZIP name, baseline dims, DSF |
-| `specs/001-user-registration/baseline/assets/*.svg` (create, 3 files) | Authoritative Figma SVG exports: `form-logo.svg`, `group-17.svg`, `google-g.svg` |
+| `specs/001-user-registration/baseline/assets/*.svg` (create, 3 files) | Authoritative Figma SVG exports: `form-logo.svg`, `group-20.svg`, `google-g.svg` |
 | `public/figma/*.svg` (create, 3 files) | Served copies of the same exports; the only graphics the route may use |
 | `scripts/pixel-diff.mjs` (create) | Harness: screenshot `/register` at 1440×850, pixelmatch vs baseline, writes `diff.png` + `result.json`, exits non-zero when diff ≥1% |
-| `app/register/page.tsx` (modify) | Delete `Sidebar()` + icons; two-panel frame; `<img>` tags for `form-logo.svg` and `group-17.svg` |
+| `app/register/page.tsx` (modify) | Delete `Sidebar()` + icons; two-panel frame; `<img>` tags for `form-logo.svg` and `group-20.svg` |
 | `app/register/register-form.tsx` (modify) | Delete hand-pathed `GoogleMark()`; `<img>` tag for `google-g.svg` |
 | `specs/001-user-registration/figma-cache/` (delete) | Legacy official-MCP cache (`FIGMA-CACHE.md` + old `reference.png`) |
 | `specs001-user-registrationfigma-cache/` + `specs001-user-registrationchecklists/` (delete) | Empty malformed root dirs |
@@ -61,15 +61,15 @@ mkdir -p specs/001-user-registration/export && unzip -o figma-export.zip -d spec
 
 Expected: an exported `<file>.json` plus an `<file>.assets/` dir with `node_*.png` (frame renders @2x), `icon_*.svg`, and the `framelinkExport` manifest block inside the JSON. Read the manifest to map asset files → nodeIds.
 
-- [ ] **Step 2: Wire the root-frame PNG to baseline + assert dims**
+- [ ] **Step 2: Crop the root-frame PNG to the frame box + assert dims**
 
-Copy the `node_*.png` for the Registration Page root frame to `specs/001-user-registration/baseline/reference.png`, then assert dims and derive the harness DSF:
+The plugin renders `absoluteRenderBounds` (2896×1716: the 1440×850 frame plus padding from the frame's canvas-only `DROP_SHADOW` y+4/blur 4). Crop to the documented frame box at offset (8,0) — the uncropped export stays in `export/` as provenance:
 
 ```bash
-node -e "const fs=require('fs');const {PNG}=require('pngjs');const p=PNG.sync.read(fs.readFileSync('specs/001-user-registration/baseline/reference.png'));console.log(p.width+'x'+p.height);if(!((p.width===2880&&p.height===1700)||(p.width===1440&&p.height===850))){process.exit(1)}"
+node -e "const fs=require('fs');const {PNG}=require('pngjs');const src=PNG.sync.read(fs.readFileSync('specs/001-user-registration/export/saas_app_20261009-140508.assets/node_500_1077.png'));const dst=new PNG({width:2880,height:1700});PNG.bitblt(src,dst,8,0,2880,1700,0,0);fs.writeFileSync('specs/001-user-registration/baseline/reference.png',PNG.sync.write(dst));const p=PNG.sync.read(fs.readFileSync('specs/001-user-registration/baseline/reference.png'));console.log(p.width+'x'+p.height);if(p.width!==2880||p.height!==1700){process.exit(1)}"
 ```
 
-Expected: `2880x1700` (DSF 2 — the normal plugin output) or `1440x850` (DSF 1). Anything else → wrong frame exported, re-export before continuing.
+Expected: `2880x1700` (DSF 2). The crop is recorded in `manifest.json`; the harness screenshots at viewport 1440×850 DSF 2.
 
 - [ ] **Step 3: Write manifest.json with the real export values**
 
@@ -101,10 +101,10 @@ git commit -m "Add Framelink export + fresh baseline for registration pixel-diff
 
 **Files:**
 - Create: `specs/001-user-registration/baseline/assets/form-logo.svg`
-- Create: `specs/001-user-registration/baseline/assets/group-17.svg`
+- Create: `specs/001-user-registration/baseline/assets/group-20.svg`
 - Create: `specs/001-user-registration/baseline/assets/google-g.svg`
 - Create: `public/figma/form-logo.svg` (byte-identical copy)
-- Create: `public/figma/group-17.svg` (byte-identical copy)
+- Create: `public/figma/group-20.svg` (byte-identical copy)
 - Create: `public/figma/google-g.svg` (byte-identical copy)
 
 Targets: form logo vector (45×44, inside login-form instance Frame 89), `Group 17` = `508:1135` (176×176), Google "G" frame (22×22, `devicon:google` inside the instance). The bridge server's ABSENT-ASSET RULE applies: only wire SVGs present in the export — never fabricate.
@@ -118,7 +118,7 @@ Read the `framelinkExport` manifest (or `get_figma_data_from_json` over the expo
 Copy each resolved file to its `baseline/assets/` name. Verify all three start with `<svg`:
 
 ```bash
-head -c 100 "specs/001-user-registration/baseline/assets/group-17.svg" && head -c 100 "specs/001-user-registration/baseline/assets/form-logo.svg" && head -c 100 "specs/001-user-registration/baseline/assets/google-g.svg"
+head -c 100 "specs/001-user-registration/baseline/assets/group-20.svg" && head -c 100 "specs/001-user-registration/baseline/assets/form-logo.svg" && head -c 100 "specs/001-user-registration/baseline/assets/google-g.svg"
 ```
 
 Fallback (only if a target is missing from the export): manual Export → SVG from the Figma UI into the same path.
@@ -126,7 +126,7 @@ Fallback (only if a target is missing from the export): manual Export → SVG fr
 - [ ] **Step 3: Mirror the three SVGs into public/figma/**
 
 ```bash
-mkdir -p public/figma && cp "specs/001-user-registration/baseline/assets/form-logo.svg" public/figma/form-logo.svg && cp "specs/001-user-registration/baseline/assets/group-17.svg" public/figma/group-17.svg && cp "specs/001-user-registration/baseline/assets/google-g.svg" public/figma/google-g.svg && diff -q "specs/001-user-registration/baseline/assets/form-logo.svg" public/figma/form-logo.svg && diff -q "specs/001-user-registration/baseline/assets/group-17.svg" public/figma/group-17.svg && diff -q "specs/001-user-registration/baseline/assets/google-g.svg" public/figma/google-g.svg && echo MIRROR-OK
+mkdir -p public/figma && cp "specs/001-user-registration/baseline/assets/form-logo.svg" public/figma/form-logo.svg && cp "specs/001-user-registration/baseline/assets/group-20.svg" public/figma/group-20.svg && cp "specs/001-user-registration/baseline/assets/google-g.svg" public/figma/google-g.svg && diff -q "specs/001-user-registration/baseline/assets/form-logo.svg" public/figma/form-logo.svg && diff -q "specs/001-user-registration/baseline/assets/group-20.svg" public/figma/group-20.svg && diff -q "specs/001-user-registration/baseline/assets/google-g.svg" public/figma/google-g.svg && echo MIRROR-OK
 ```
 
 Expected: `MIRROR-OK` (all three copies byte-identical).
@@ -134,7 +134,7 @@ Expected: `MIRROR-OK` (all three copies byte-identical).
 - [ ] **Step 4: Commit**
 
 ```bash
-git add "specs/001-user-registration/baseline/assets" public/figma/form-logo.svg public/figma/group-17.svg public/figma/google-g.svg
+git add "specs/001-user-registration/baseline/assets" public/figma/form-logo.svg public/figma/group-20.svg public/figma/google-g.svg
 git commit -m "Add exact Figma SVG assets for registration page"
 ```
 
@@ -147,7 +147,7 @@ git commit -m "Add exact Figma SVG assets for registration page"
 - [ ] **Step 1: Confirm the fresh baseline exists (safety gate)**
 
 ```bash
-ls -l "specs/001-user-registration/baseline/reference.png" "specs/001-user-registration/baseline/assets/form-logo.svg" "specs/001-user-registration/baseline/assets/group-17.svg" "specs/001-user-registration/baseline/assets/google-g.svg"
+ls -l "specs/001-user-registration/baseline/reference.png" "specs/001-user-registration/baseline/assets/form-logo.svg" "specs/001-user-registration/baseline/assets/group-20.svg" "specs/001-user-registration/baseline/assets/google-g.svg"
 ```
 
 Expected: all four files listed. If any is missing, STOP — do not delete anything.
@@ -327,19 +327,19 @@ export const metadata: Metadata = {
     'Create a free account to access iconic voices in studio quality.',
 };
 
-/** Right decorative panel — Group 20: 710x850 #1A1822, Group 17 mark is a Figma export. */
+/** Right decorative panel — Group 20 verbatim Figma export, 710x850. */
 function DecorativePanel() {
   return (
     <aside
       aria-hidden="true"
-      className="hidden w-[710px] max-w-[49.3%] flex-none items-center justify-center bg-[#1A1822] lg:flex"
+      className="hidden w-[710px] max-w-[49.3%] flex-none items-center justify-center bg-[#1A1922] lg:flex"
     >
       <img
-        src="/figma/group-17.svg"
+        src="/figma/group-20.svg"
         alt=""
-        width={176}
-        height={176}
-        className="h-44 w-44"
+        width={710}
+        height={850}
+        className="h-[850px] w-[710px] max-w-none"
       />
     </aside>
   );
@@ -500,7 +500,7 @@ For each round, change ONLY the clustered region, using values from this table (
 | Continue | 474×51 | `h-[51px] rounded-[89.1px] bg-[#EFEFF7] text-[18px] font-semibold text-[#07070D]` |
 | Legal | 14px/600 | `text-[14px] font-semibold leading-[17px] tracking-[-0.7px] text-[#C8C8D1] text-center` |
 | Footer | 16px/600 | `text-[16px] font-semibold leading-[19px] text-[#EFEFF7] text-center` |
-| Right panel | 710×850 | `w-[710px] bg-[#1A1822]`, mark `h-44 w-44` (176×176) |
+| Right panel | 710×850 | `w-[710px] bg-[#1A1922]`, `<img src="/figma/group-20.svg">` 710×850 verbatim |
 | Frame gaps | 48/24/16 | `gap-12` / `gap-6` / `gap-4` |
 
 After each round, re-run `node scripts/pixel-diff.mjs` and record the percent. Stop at the first PASS (`harness-exit=0`). Residual sub-1% glyph-edge noise from Inter anti-aliasing is accepted — do not chase it past the gate.
