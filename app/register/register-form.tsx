@@ -2,45 +2,6 @@
 
 import { useState, type FormEvent } from 'react';
 
-/** Google "G" mark — devicon:google palette from Figma (22x22). */
-function GoogleMark() {
-  return (
-    <svg
-      aria-hidden="true"
-      width="22"
-      height="22"
-      viewBox="0 0 22 22"
-      className="h-[22px] w-[22px] flex-none"
-    >
-      {/* white backing plate */}
-      <path
-        fill="#FFFFFF"
-        d="M11 4.06c2.35 0 3.97.99 4.88 1.82l3.28-3.2C17.18 1.02 14.4 0 11 0 6.7 0 2.93 2.45.9 5.97l3.84 2.98C5.62 6.36 8.04 4.06 11 4.06Z"
-      />
-      {/* red */}
-      <path
-        fill="#E33629"
-        d="M21.68 11.19c0-.74-.06-1.45-.18-2.14H11v4.06h5.98a5.13 5.13 0 0 1-2.23 3.37v2.79h3.61c2.11-1.95 3.32-4.82 3.32-8.08Z"
-      />
-      {/* green */}
-      <path
-        fill="#319F43"
-        d="M11 22c3 0 5.51-1 7.35-2.69l-3.61-2.79c-1 .67-2.27 1.07-3.74 1.07-2.88 0-5.33-1.95-6.2-4.58H.85v2.87A11 11 0 0 0 11 22Z"
-      />
-      {/* yellow */}
-      <path
-        fill="#F8BD00"
-        d="M4.8 13.01a6.66 6.66 0 0 1 0-4.02V6.12H.85a11 11 0 0 0 0 9.76l3.95-2.87Z"
-      />
-      {/* blue */}
-      <path
-        fill="#587DBD"
-        d="M11 4.06c1.63 0 3.08.56 4.23 1.66l3.18-3.1C16.49 1.05 14.03 0 11 0 6.7 0 2.93 2.45.9 5.97l3.84 2.98C5.62 6.36 8.04 4.06 11 4.06Z"
-      />
-    </svg>
-  );
-}
-
 type Status = 'idle' | 'error';
 
 export default function RegisterForm() {
@@ -73,7 +34,13 @@ export default function RegisterForm() {
         onClick={handleGoogle}
         className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[99px] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
-        <GoogleMark />
+        <img
+          src="/figma/google-g.svg"
+          alt=""
+          width={22}
+          height={22}
+          className="h-[22px] w-[22px] flex-none"
+        />
         <span className="text-[18px] font-medium leading-none text-[#EFEFF7]">
           Continue with Google
         </span>
