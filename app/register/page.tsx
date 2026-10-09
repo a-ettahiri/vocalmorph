@@ -32,7 +32,7 @@ export default function RegisterPage() {
         {/* Center — registration form INSTANCE, 474x571 */}
         <section
           aria-labelledby="register-heading"
-          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10"
+          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 lg:justify-start lg:pl-[142px]"
         >
           {/* Frame 89: vertical, gap 48 */}
           <div className="flex w-full max-w-[474px] flex-col items-center gap-12">
