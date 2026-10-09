@@ -7,16 +7,14 @@
     "grep": "allow",
     "list": "allow",
     "bash": {
-      "*": "ask",
-      "git *": "allow",
-      "npm *": "allow",
-      "npx *": "allow",
-      "bun *": "allow",
-      "ls *": "allow",
-      "cat *": "allow",
+      "*": "allow",
       "rm *": "deny",
       "rm -rf *": "deny",
-      "sudo *": "deny"
+      "sudo *": "deny",
+      "mkfs *": "deny",
+      "dd *": "deny",
+      "shutdown *": "deny",
+      "reboot *": "deny"
     },
     "webfetch": "allow",
     "websearch": "allow",
@@ -25,14 +23,7 @@
     "lsp": "allow",
     "question": "allow",
     "todowrite": "allow",
-    "external_directory": "ask",
-    "doom_loop": "ask"
-  },
-  "mcp": {
-    "figma": {
-      "type": "local",
-      "command": ["npx", "-y", "mcp-figma"],
-      "enabled": true
-    }
+    "external_directory": "allow",
+    "doom_loop": "allow"
   }
 }
