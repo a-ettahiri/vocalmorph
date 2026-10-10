@@ -37,8 +37,8 @@ html {
 
 - [ ] **Step 3: Verify math and presence**
 
-Run: `grep -n "adaptive-coefficient" app/globals.css`
-Expected: match on the comment line.
+Run: `grep -n "Adaptive coefficient" app/globals.css`
+Expected: match on the comment line (line 28).
 
 Run: `node -e "console.log((0.6987 * (14.4 + 8.5)).toFixed(4))"`
 Expected: `16.0002` (0.0002px over 16px — sub-pixel, invisible).
