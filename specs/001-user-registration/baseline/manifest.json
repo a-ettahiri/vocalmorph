@@ -1,0 +1,28 @@
+{
+  "fileKey": "EqW1vze2r9eFrdUdi8ajzp",
+  "nodeId": "500:1077",
+  "nodeName": "Registration Page",
+  "exportedAt": "2026-10-09T14:17:56.718Z",
+  "zipName": "saas_app_20261009-140508.zip",
+  "pluginVersion": "1.3.0",
+  "frameBox": { "width": 1440, "height": 850 },
+  "renderBounds": { "width": 1448, "height": 858 },
+  "baseline": { "width": 2880, "height": 1700 },
+  "deviceScaleFactor": 2,
+  "crop": {
+    "x": 8,
+    "y": 0,
+    "width": 2880,
+    "height": 1700,
+    "reason": "remove renderBounds padding from the frame's canvas-only DROP_SHADOW (y+4, blur 4, invisible in product); uncropped export preserved in export/"
+  },
+  "assets": {
+    "form-logo.svg": "I516:1355;512:1170 VECTOR 45x44 (rounded-square star mark)",
+    "group-20.svg": "512:1354 GROUP Group 20 710x850 (Rectangle 69 #1A1922 + Group 17 play mark)",
+    "google-g.svg": "I516:1355;512:1175 FRAME devicon:google 22x22"
+  },
+  "excluded": {
+    "500:1080 Frame 45": "visible=false sidebar contamination; its image fill 2d4dc78b (Ellipse 2 avatar, 977KB) not wired"
+  },
+  "via": "Framelink Exporter plugin + figma-local-mcp (no API calls)"
+}
