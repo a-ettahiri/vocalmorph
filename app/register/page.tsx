@@ -12,14 +12,14 @@ function DecorativePanel() {
   return (
     <aside
       aria-hidden="true"
-      className="hidden w-[710px] max-w-[49.3%] flex-none items-center justify-center bg-[#1A1922] lg:flex"
+      className="hidden w-[44.375rem] max-w-[49.3%] flex-none items-center justify-center bg-[#1A1922] lg:flex"
     >
       <img
         src="/figma/group-20.svg"
         alt=""
         width={710}
         height={850}
-        className="h-[850px] w-[710px] max-w-none"
+        className="h-[53.125rem] w-[44.375rem] max-w-none"
       />
     </aside>
   );
@@ -28,31 +28,32 @@ function DecorativePanel() {
 export default function RegisterPage() {
   return (
     <main className="flex min-h-screen w-full justify-center bg-[#07070D] text-white [color-scheme:dark]">
-      <div className="flex min-h-[850px] w-full max-w-[1440px] flex-row shadow-[0_25px_80px_rgba(0,0,0,0.55)]">
+      <div className="flex min-h-[53.125rem] w-full max-w-[100rem] justify-center">
+        <div className="flex w-full max-w-[90rem] flex-row shadow-[0_1.5625rem_5rem_rgba(0,0,0,0.55)]">
         {/* Center — registration form INSTANCE, 474x571 */}
         <section
           aria-labelledby="register-heading"
-          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 lg:justify-start lg:pl-[142px]"
+          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 lg:justify-start lg:pl-[8.875rem]"
         >
           {/* Frame 89: vertical, gap 48 */}
-          <div className="flex w-full max-w-[474px] flex-col items-center gap-12">
+          <div className="flex w-full max-w-[29.625rem] flex-col items-center gap-12">
             <img
               src="/figma/form-logo.svg"
               alt=""
               width={45}
               height={44}
-              className="h-11 w-[45px]"
+              className="h-11 w-[2.8125rem]"
             />
 
             {/* Headings — Group 18: 474x100 */}
             <div className="flex w-full flex-col items-center gap-3">
               <h1
                 id="register-heading"
-                className="w-full text-center text-[36px] font-extrabold leading-[43.57px] tracking-[-1.08px] text-white"
+                className="w-full text-center text-[2.25rem] font-extrabold leading-[2.7231rem] tracking-[-0.0675rem] text-white"
               >
                 Create your free account
               </h1>
-              <p className="w-full text-center text-[14px] font-normal leading-[22.4px] text-[#DEDEE5]">
+              <p className="w-full text-center text-[0.875rem] font-normal leading-[1.4rem] text-[#DEDEE5]">
                 Access the world&apos;s most iconic voices in studio quality,
                 The industry standard for high-fidelity celebrity voice clones.
               </p>
@@ -62,7 +63,7 @@ export default function RegisterPage() {
             <RegisterForm />
 
             {/* Footer — 236x19, #EFEFF7, 16px SemiBold, center */}
-            <p className="text-center text-[16px] font-semibold leading-[19px] text-[#EFEFF7]">
+            <p className="text-center text-[1rem] font-semibold leading-[1.1875rem] text-[#EFEFF7]">
               Already have an account?{' '}
               <a href="/login" className="text-[#EFEFF7] hover:underline">
                 Log in
@@ -71,7 +72,8 @@ export default function RegisterPage() {
           </div>
         </section>
 
-        <DecorativePanel />
+          <DecorativePanel />
+        </div>
       </div>
     </main>
   );

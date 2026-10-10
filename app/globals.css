@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
+
+/* Adaptive coefficient (Sage adaptive-design): X = 16px base / (14.4px per 1vw + 8.5px per 1vh
+   on the 1440x850 design frame) = 0.6987. At exactly 1440x850 the root computes to 16.0002px,
+   so all rem values below render identically to their px originals at desktop. */
+html {
+  font-size: calc(0.6987vh + 0.6987vw);
+}
