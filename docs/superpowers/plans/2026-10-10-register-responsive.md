@@ -60,7 +60,7 @@ git commit -m "feat(register): add adaptive-coefficient root font-size"
 - [ ] **Step 1: Failing check — px values present**
 
 Run: `grep -c "px\]" app/register/page.tsx`
-Expected: a number greater than 0 (currently 8 lines contain `px]`).
+Expected: a number greater than 0 (currently 9 lines contain `px]`).
 
 - [ ] **Step 2: Convert DecorativePanel dimensions**
 
@@ -120,6 +120,11 @@ Old: `className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:p
 New: `className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 lg:justify-start lg:pl-[8.875rem]"`
 
 (`px-6`, `py-14`, `sm:px-10` are Tailwind scale classes — already rem-based, keep them. 142 / 16 = 8.875 exact.)
+
+Old: `<div className="flex w-full max-w-[474px] flex-col items-center gap-12">`
+New: `<div className="flex w-full max-w-[29.625rem] flex-col items-center gap-12">`
+
+(474 / 16 = 29.625 exact.)
 
 Old: `className="h-11 w-[45px]"`
 New: `className="h-11 w-[2.8125rem]"`
