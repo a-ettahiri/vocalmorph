@@ -1,24 +1,28 @@
 # Register Route Redo — Design
 
 **Date:** 2026-10-10
-**Status:** Approved (brainstorming complete, awaiting implementation plan)
+**Status:** Approved + corrected 2026-10-10 (see Correction below) — implementation DONE in `.worktrees/001-user-registration-pixel-diff`, harness PASSED 0.62%
 **Route:** `/register` (`app/register/page.tsx` + `app/register/register-form.tsx`)
 **Stack:** Next.js 16.4 App Router + React 19 + TypeScript + Tailwind CSS v4, Inter via `next/font/google`
-**Supersedes:** nothing — reaffirms `docs/superpowers/specs/2026-10-09-registration-pixel-diff-design.md` and executes via `docs/superpowers/plans/2026-10-09-registration-pixel-diff.md`
+**Supersedes:** nothing — reaffirms `docs/superpowers/specs/2026-10-09-registration-pixel-diff-design.md` and executes via `docs/superpowers/plans/2026-10-09-registration-pixel-diff.md` **as revised in the worktree** (export-once bridge, @2x baseline)
+
+## Correction (2026-10-10, accepted by user)
+
+This spec as first written described the ORIGINAL plan (1440x850 @1x baseline, `group-17.svg` 176x176 mark, panel `#1A1822`, REST export). The worktree implementation instead followed the REVISED plan: Framelink Exporter plugin ZIP (zero API calls), baseline 2880x1700 @2x (viewport 1440x850 CSS, DSF 2), whole-panel `group-20.svg` export (Rectangle 69 `#1A1922` + Group 17 mark, per actual Figma bytes), harness auto-follows baseline dims. The @2x gate is strictly harder (4x pixels); whole-panel bytes are more exact than a hand-composed panel+mark. Sections below are corrected to that reality.
 
 ## Locked decisions (2026-10-10 brainstorming)
 
-1. **Visual truth:** Figma file `EqW1vze2r9eFrdUdi8ajzp`, node `500:1077` ("Registration Page", 1440x850) as two panels only — center form INSTANCE 474x571 + right panel `Group 20` 710x850 `#1A1822`. The `Frame 45` sidebar (91px rail, home pill, 4 icons, avatar) present in current code and in raw Figma JSON is contamination and MUST be deleted.
-2. **Asset rule:** byte-exact Figma SVG exports only (`form-logo` 45x44, `Group 17` 176x176 `508:1135`, `Google G` 22x22). No hand-written `path d=`, no guessed rects/rotations. Every `<svg>`/`<img>` in route files traces to `public/figma/` imports; audit `grep -rn "<path\|<rect\|<circle" app/register/` MUST return zero matches.
-3. **Pass mark:** Playwright screenshot of `/register` at exactly 1440x850 vs fresh baseline PNG via `pixelmatch` MUST be <1% different pixels. Residual sub-1% is Inter anti-aliasing noise only.
+1. **Visual truth:** Figma file `EqW1vze2r9eFrdUdi8ajzp`, node `500:1077` ("Registration Page", 1440x850 CSS) as two panels only — center form INSTANCE 474x571 + right panel `Group 20` 710x850 `#1A1922` (Rectangle 69 per actual export bytes; the earlier `#1A1822` reading from the node tree was wrong). The `Frame 45` sidebar (91px rail, home pill, 4 icons, avatar) present in prior code and in raw Figma JSON is contamination (`visible=false`) and MUST be deleted.
+2. **Asset rule:** byte-exact Figma SVG exports only (`form-logo` 45x44, `group-20` whole 710x850 panel incl. Group 17 mark, `Google G` 22x22). No hand-written `path d=`, no guessed rects/rotations. Every `<svg>`/`<img>` in route files traces to `public/figma/` imports; audit `grep -rn "<path\|<rect\|<circle" app/register/` MUST return zero matches.
+3. **Pass mark:** Playwright screenshot of `/register` at viewport 1440x850 CSS with DSF following the baseline (DSF 2 for the 2880x1700 @2x baseline) vs baseline PNG via `pixelmatch` MUST be <1% different pixels. Recorded PASS 2026-10-09: 0.62% (30191 px @2x). Residual sub-1% is Inter anti-aliasing noise only.
 4. **Scope:** UI-only. Client validation + stub console handlers, no backend/OAuth/DB. Legal/login links may stay `#`/`/login` placeholders. Existing `/` unchanged.
 
 ## 1. Architecture
 
-- **Baseline store (create):** `specs/001-user-registration/baseline/reference.png` (fresh 1x export of `500:1077`, asserted 1440x850) + `baseline/manifest.json` (fileKey, nodeId, nodeName, exportedAt UTC, format png, scale 1, viewport 1440x850, via).
-- **Asset store (create):** `specs/001-user-registration/baseline/assets/{form-logo,group-17,google-g}.svg` mirrored byte-identical to `public/figma/*.svg` (verified with `diff -q`, expect `MIRROR-OK`).
+- **Baseline store (create):** `specs/001-user-registration/baseline/reference.png` (Framelink plugin export of `500:1077`, cropped to frame box 2880x1700 @2x; uncropped node PNG kept in `specs/001-user-registration/export/` as provenance) + `baseline/manifest.json` (fileKey, nodeId, nodeName, exportedAt UTC, zipName, baseline dims, deviceScaleFactor 2, crop record, via).
+- **Asset store (create):** `specs/001-user-registration/baseline/assets/{form-logo,group-20,google-g}.svg` mirrored byte-identical to `public/figma/*.svg` (verified with `diff -q`, expect `MIRROR-OK`).
 - **Route files (modify):** `page.tsx` = server two-panel frame + headings + footer; `register-form.tsx` = client Google button + divider + email form + legal. `Sidebar*` code deleted.
-- **Harness (create):** `scripts/pixel-diff.mjs` — chromium viewport 1440x850 DSF1, screenshot to `.superpowers/pixel-diff/current.png`, pixelmatch vs baseline, writes `diff.png` + `result.json` `{percent, passed}`, exits non-zero when `percent >= 0.01`. Output dir git-ignored.
+- **Harness (create):** `scripts/pixel-diff.mjs` — chromium viewport 1440x850 with DSF following baseline dims (2 for 2880x1700, 1 for 1440x850), screenshot to `.superpowers/pixel-diff/current.png`, pixelmatch vs baseline, writes `diff.png` + `result.json` `{percent, passed}`, exits non-zero when `percent >= 0.01`. Output dir git-ignored.
 - **Cleanup (delete, only after fresh baseline lands):** `specs/001-user-registration/figma-cache/`, root `specs001-user-registrationfigma-cache/` + `specs001-user-registrationchecklists/`, out-of-repo `~/.mcp-figma/cache/file_nodes_*.json` x4. Keep `spec.md` + `checklists/requirements.md`.
 
 ## 2. Components
@@ -33,13 +37,13 @@
 | Email form | input 474x51 `#1A1A23` radius16, 16px/500 ls 0.48, placeholder `Enter email address` `#B3B3BC`; Continue 474x51 `#EFEFF7` radius89.1, 18px/600 `#07070D` |
 | Legal | 14px/600/-0.7 `#C8C8D1` center with Terms + Privacy links |
 | Footer | 16px/600 `#EFEFF7` center, `Log in` link to `/login` |
-| Right panel | `w-[710px] bg-[#1A1822]`, `<img /figma/group-17.svg>` 176x176 centered; hidden below `lg` |
+| Right panel | `w-[710px] bg-[#1A1922]`, whole-panel `<img /figma/group-20.svg>` 710x850 (Rectangle 69 + Group 17 mark, exact bytes); hidden below `lg` |
 
 ## 3. Data flow
 
-1. Probe `figma-local render_images(500:1077, png, 1x)` single-flight (the live check).
-2. Download baseline PNG, assert exactly 1440x850 via `pngjs`.
-3. Render 3 SVGs one node at a time, download to `baseline/assets/`, verify each starts with `<svg`.
+1. Human export from Figma Desktop via Framelink Exporter plugin (ZIP with PNG frames @2x + SVG icons + image fills); zero Figma API calls, so no 429 path. Fallback: manual Export from Figma UI into the same paths (still exact bytes).
+2. Unpack ZIP to `specs/001-user-registration/export/`, crop root-frame PNG to frame box (offset 8,0 — removes canvas-only DROP_SHADOW padding), assert 2880x1700 via `pngjs`.
+3. Map the 3 SVGs via the export manifest, copy to `baseline/assets/`, verify each starts with `<svg`.
 4. Mirror to `public/figma/` + `diff -q` byte check.
 5. Delete legacy caches (safety-gated on all 4 fresh files existing).
 6. Rebuild the two route files against baseline + file imports.
@@ -48,14 +52,14 @@
 
 ## 4. Error handling
 
-- **429 rate limit (observed 2x on 2026-10-09):** single-flight requests, exponential backoff, max 5 attempts, then manual Export-from-Figma-UI fallback into the same `assets/` paths (still exact bytes, no drawing). Harness work proceeds without blocking.
+- **Figma contact:** export-once via Framelink plugin ZIP; no API calls by design (the 429s seen 2x on 2026-10-09 with the old REST path are gone). If the plugin is unavailable, manual Export-from-Figma-UI fallback into the same `assets/` paths (still exact bytes, no drawing).
 - **Missing baseline:** harness exits 2 with clear message, never compares against nothing.
-- **Size mismatch:** harness exits 2; both images MUST be 1440x850.
+- **Size mismatch:** harness exits 2; dims MUST be 2880x1700 (@2x) or 1440x850 (@1x), DSF follows baseline.
 - **Font drift:** Inter pinned via `next/font/google`; glyph-edge clusters accepted only if total stays <1%, documented in `result.json`.
 
 ## 5. Testing
 
-- **Primary gate:** harness `percent < 0.01` at 1440x850 desktop only; responsive `<lg` collapse out of % scope.
+- **Primary gate:** harness `percent < 0.01` at 1440x850 CSS viewport (DSF 2 against the @2x baseline); responsive `<lg` collapse out of % scope.
 - **Asset audit:** zero hand-drawn vector matches in `app/register/`.
 - **Regression:** `npx tsc --noEmit`, `npm run lint`, `npm run build` (`/register` prerendered), manual Tab order Google -> email -> Continue -> Terms -> Privacy -> Log in with visible focus, no traps.
 - **Out of scope:** mobile pixel-parity %, backend/auth/OAuth, homepage changes, shadcn, new deps beyond installed `playwright`/`pixelmatch`/`pngjs`.
