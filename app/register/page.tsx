@@ -12,7 +12,7 @@ function DecorativePanel() {
   return (
     <aside
       aria-hidden="true"
-      className="hidden w-[44.375rem] max-w-[49.3%] flex-none items-center justify-center bg-[#1A1922] lg:flex"
+      className="hidden w-[44.375rem] flex-none items-center justify-center bg-[#1A1922] min-[1420px]:flex"
     >
       <img
         src="/figma/group-20.svg"
@@ -33,7 +33,7 @@ export default function RegisterPage() {
         {/* Center — registration form INSTANCE, 474x571 */}
         <section
           aria-labelledby="register-heading"
-          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 lg:justify-start lg:pl-[8.875rem]"
+          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 min-[1420px]:justify-start min-[1420px]:pl-[8.875rem]"
         >
           {/* Frame 89: vertical, gap 48 */}
           <div className="flex w-full max-w-[29.625rem] flex-col items-center gap-12">

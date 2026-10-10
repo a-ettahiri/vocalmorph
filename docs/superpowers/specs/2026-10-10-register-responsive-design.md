@@ -10,7 +10,8 @@
 
 1. **Responsive scope:** all screens — mobile (~360px), tablet (~768px), desktop (1440px), large (>1440px).
 2. **Mobile:** adaptive single column — side panel hidden, form column full-width with page padding, all type/spacing in rem so the coefficient scales it. Breakpoint only hides the panel.
-3. **Tablet:** same as mobile, wider — single column, panel hidden, form capped at 474px and centered. One layout for everything below `lg`.
+3. **Tablet:** same as mobile, wider — single column, panel hidden, form capped at 474px and centered. One layout for everything below the panel threshold.
+3b. **Panel 50% rule:** the 710px right panel must never exceed 50% of viewport width — whenever it would, it hides. 710 / 0.5 = 1420px viewport threshold, implemented as `min-[1420px]:flex` (replacing the earlier `lg` breakpoint). The old `max-w-[49.3%]` squeeze guard is removed: with the threshold the panel always fits at full width when shown. Form left-alignment (`justify-start`, `pl-[8.875rem]`) follows the same `min-[1420px]` breakpoint.
 4. **Large screens:** cap at 1600px and center — the 1440px Figma geometry stays intact and centered, gutters filled with page bg `#07070D`.
 5. **Submit:** stays a stub — inline validation, console log, no navigation. Backend wiring is a separate future task.
 6. **Google button:** stays a stub — log only, no loading theater, no OAuth.
