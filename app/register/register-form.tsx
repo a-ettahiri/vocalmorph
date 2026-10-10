@@ -32,27 +32,27 @@ export default function RegisterForm() {
       <button
         type="button"
         onClick={handleGoogle}
-        className="flex h-[46px] w-full items-center justify-center gap-2 rounded-[99px] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex h-[2.875rem] w-full items-center justify-center gap-2 rounded-[6.1875rem] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <img
           src="/figma/google-g.svg"
           alt=""
           width={22}
           height={22}
-          className="h-[22px] w-[22px] flex-none"
+          className="h-[1.375rem] w-[1.375rem] flex-none"
         />
-        <span className="text-[18px] font-medium leading-none text-[#EFEFF7]">
+        <span className="text-[1.125rem] font-medium leading-none text-[#EFEFF7]">
           Continue with Google
         </span>
       </button>
 
       {/* Divider — Frame 84: 474x19, gap 19, 210px lines #B3B3BC */}
-      <div className="flex h-[19px] w-full items-center gap-[19px]" aria-hidden="true">
-        <span className="h-px w-full max-w-[210px] flex-1 bg-[#B3B3BC]" />
-        <span className="text-[16px] font-medium leading-none text-[#B3B3BC]">
+      <div className="flex h-[1.1875rem] w-full items-center gap-[1.1875rem]" aria-hidden="true">
+        <span className="h-px w-full max-w-[13.125rem] flex-1 bg-[#B3B3BC]" />
+        <span className="text-[1rem] font-medium leading-none text-[#B3B3BC]">
           or
         </span>
-        <span className="h-px w-full max-w-[210px] flex-1 bg-[#B3B3BC]" />
+        <span className="h-px w-full max-w-[13.125rem] flex-1 bg-[#B3B3BC]" />
       </div>
 
       {/* Frame 87: vertical, gap 16 */}
@@ -75,10 +75,10 @@ export default function RegisterForm() {
             }}
             aria-invalid={status === 'error'}
             aria-describedby={status === 'error' ? 'register-email-error' : undefined}
-            className="h-[51px] w-full rounded-2xl border border-transparent bg-[#1A1A23] px-4 text-[16px] font-medium tracking-[0.48px] text-[#EFEFF7] placeholder:text-[#B3B3BC] focus:border-[#9E9EA8] focus:outline-none"
+            className="h-[3.1875rem] w-full rounded-2xl border border-transparent bg-[#1A1A23] px-4 text-[1rem] font-medium tracking-[0.03rem] text-[#EFEFF7] placeholder:text-[#B3B3BC] focus:border-[#9E9EA8] focus:outline-none"
           />
           {status === 'error' && (
-            <p id="register-email-error" role="alert" className="-mt-2 text-[14px] font-medium text-[#FF8A8A]">
+            <p id="register-email-error" role="alert" className="-mt-2 text-[0.875rem] font-medium text-[#FF8A8A]">
               Please enter a valid email address.
             </p>
           )}
@@ -86,14 +86,14 @@ export default function RegisterForm() {
           {/* Continue — Frame 35: 474x51, #EFEFF7, radius 89.1 */}
           <button
             type="submit"
-            className="flex h-[51px] w-full items-center justify-center rounded-[89.1px] bg-[#EFEFF7] px-[43.2px] py-[14.4px] text-center text-[18px] font-semibold leading-none text-[#07070D] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="flex h-[3.1875rem] w-full items-center justify-center rounded-[5.5688rem] bg-[#EFEFF7] px-[2.7rem] py-[0.9rem] text-center text-[1.125rem] font-semibold leading-none text-[#07070D] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Continue
           </button>
         </form>
 
         {/* Legal — 474x17, #C8C8D1, 14px SemiBold, ls -0.7, center */}
-        <p className="w-full text-center text-[14px] font-semibold leading-[17px] tracking-[-0.7px] text-[#C8C8D1]">
+        <p className="w-full text-center text-[0.875rem] font-semibold leading-[1.0625rem] tracking-[-0.0438rem] text-[#C8C8D1]">
           By continuing, you agree to the app{' '}
           <a href="#" className="text-[#C8C8D1] hover:underline">
             Terms of Service
