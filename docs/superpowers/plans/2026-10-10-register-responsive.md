@@ -189,7 +189,7 @@ git commit -m "feat(register): px-to-rem conversion and 1600px cap on page frame
 - [ ] **Step 1: Failing check — px values present**
 
 Run: `grep -c "px\]" app/register/register-form.tsx`
-Expected: a number greater than 0 (currently 10 lines contain `px]`).
+Expected: a number greater than 0 (currently 11 lines contain `px]`).
 
 - [ ] **Step 2: Convert Google button, divider, input, error**
 
