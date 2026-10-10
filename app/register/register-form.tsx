@@ -32,7 +32,7 @@ export default function RegisterForm() {
       <button
         type="button"
         onClick={handleGoogle}
-        className="flex h-[2.875rem] w-full items-center justify-center gap-2 rounded-[6.1875rem] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="flex h-[2.875rem] min-h-[44px] w-full items-center justify-center gap-2 rounded-[6.1875rem] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <img
           src="/figma/google-g.svg"
@@ -75,7 +75,7 @@ export default function RegisterForm() {
             }}
             aria-invalid={status === 'error'}
             aria-describedby={status === 'error' ? 'register-email-error' : undefined}
-            className="h-[3.1875rem] w-full rounded-2xl border border-transparent bg-[#1A1A23] px-4 text-[1rem] font-medium tracking-[0.03rem] text-[#EFEFF7] placeholder:text-[#B3B3BC] focus:border-[#9E9EA8] focus:outline-none"
+            className="h-[3.1875rem] min-h-[44px] w-full rounded-2xl border border-transparent bg-[#1A1A23] px-4 text-[1rem] font-medium tracking-[0.03rem] text-[#EFEFF7] placeholder:text-[#B3B3BC] focus:border-[#9E9EA8] focus:outline-none"
           />
           {status === 'error' && (
             <p id="register-email-error" role="alert" className="-mt-2 text-[0.875rem] font-medium text-[#FF8A8A]">
@@ -86,7 +86,7 @@ export default function RegisterForm() {
           {/* Continue — Frame 35: 474x51, #EFEFF7, radius 89.1 */}
           <button
             type="submit"
-            className="flex h-[3.1875rem] w-full items-center justify-center rounded-[5.5688rem] bg-[#EFEFF7] px-[2.7rem] py-[0.9rem] text-center text-[1.125rem] font-semibold leading-none text-[#07070D] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="flex h-[3.1875rem] min-h-[44px] w-full items-center justify-center rounded-[5.5688rem] bg-[#EFEFF7] px-[2.7rem] py-[0.9rem] text-center text-[1.125rem] font-semibold leading-none text-[#07070D] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Continue
           </button>
