@@ -6,16 +6,7 @@
     "glob": "allow",
     "grep": "allow",
     "list": "allow",
-    "bash": {
-      "*": "allow",
-      "rm *": "deny",
-      "rm -rf *": "deny",
-      "sudo *": "deny",
-      "mkfs *": "deny",
-      "dd *": "deny",
-      "shutdown *": "deny",
-      "reboot *": "deny"
-    },
+    "bash": "allow",
     "webfetch": "allow",
     "websearch": "allow",
     "task": "allow",
@@ -25,5 +16,11 @@
     "todowrite": "allow",
     "external_directory": "allow",
     "doom_loop": "allow"
+  },
+  "agent": {
+    "coder-agent": {
+      "mode": "subagent",
+      "hidden": true
+    }
   }
 }

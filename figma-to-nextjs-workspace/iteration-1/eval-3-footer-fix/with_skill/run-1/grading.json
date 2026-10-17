@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "Footer snippet applies symmetric 10.8px (0.675rem) left and right insets",
+      "passed": true,
+      "evidence": "Found in member-footer.tsx: '<div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">'"
+    },
+    {
+      "text": "Transcript derives the exact tenth-pixel footer band 756.4 to 821.2",
+      "passed": true,
+      "evidence": "Found in transcript.md: 'css y-band `[850 - 28.8 - 64.8, 850 - 28.8]` = `[756.4, 821.2]` \u2192'"
+    },
+    {
+      "text": "Transcript states PASS as percent < 0.01 with the pixelmatch threshold",
+      "passed": true,
+      "evidence": "Found in transcript.md: '`percent = mismatched / (w*h)`; **PASS iff `percent < 0.01`**.'"
+    },
+    {
+      "text": "Transcript lists pre-gate verification (tsc, lint, build) before claiming PASS",
+      "passed": true,
+      "evidence": "Found in transcript.md: '6. Pre-gate per skill: `tsc`, lint changed files, `npm run build` before claiming PASS.'"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 5300,
+    "transcript_chars": 3882
+  },
+  "timing": {},
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "total_tokens": 0,
+  "duration_ms": 0,
+  "total_duration_seconds": 0.0,
+  "note": "OpenCode task channel exposes no token/timing telemetry, so time/token comparisons are unavailable for iteration-1; pass_rate is the comparison metric."
+}

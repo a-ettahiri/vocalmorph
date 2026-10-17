@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "Route page keeps 48px sides with a sticky full-height sidebar wrapper",
+      "passed": true,
+      "evidence": "Found in page.tsx: '<main className=\"flex min-h-screen w-full bg-[#07070D] px-[3rem] text-white [color-scheme:dark]\">'"
+    },
+    {
+      "text": "Sidebar reuses verbatim /figma/sidebar asset refs",
+      "passed": true,
+      "evidence": "Found in app-sidebar.tsx: '*  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).'"
+    },
+    {
+      "text": "Transcript cites the sidebar-region gate script and its x=48 crop",
+      "passed": true,
+      "evidence": "Found in transcript.md: '(node 453:3384, Frame 46 266x850 @ x=48, DSF 2), `scripts/pixel-diff-cookies.mjs`'"
+    },
+    {
+      "text": "Transcript maps the work to SKILL.md sections",
+      "passed": true,
+      "evidence": "Found in transcript.md: '1. Read `figma-to-nextjs/SKILL.md` in full (workflow \u00a7\u00a71\u20137, pitfalls, examples).'"
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 15392,
+    "transcript_chars": 3292
+  },
+  "timing": {},
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

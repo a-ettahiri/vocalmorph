@@ -7,19 +7,19 @@ export const metadata: Metadata = {
     'Create a free account to access iconic voices in studio quality.',
 };
 
-/** Right decorative panel — Group 20 verbatim Figma export, 710x850. */
+/** Right video placeholder — fixed 50vw x 100vh, never scrolls with the form. */
 function DecorativePanel() {
   return (
     <aside
       aria-hidden="true"
-      className="hidden w-[44.375rem] flex-none items-center justify-center bg-[#1A1922] min-[1420px]:flex"
+      className="fixed right-0 top-0 hidden h-screen w-[50vw] flex-none items-center justify-center overflow-hidden bg-[#1A1922] min-[1420px]:flex"
     >
       <img
         src="/figma/group-20.svg"
         alt=""
         width={710}
         height={850}
-        className="h-[53.125rem] w-[44.375rem] max-w-none"
+        className="h-full w-full object-cover"
       />
     </aside>
   );
@@ -27,16 +27,17 @@ function DecorativePanel() {
 
 export default function RegisterPage() {
   return (
-    <main className="flex min-h-screen w-full justify-center bg-[#07070D] text-white [color-scheme:dark]">
-      <div className="flex min-h-[53.125rem] w-full max-w-[100rem] justify-center">
-        <div className="flex w-full max-w-[90rem] flex-row shadow-[0_1.5625rem_5rem_rgba(0,0,0,0.55)]">
-        {/* Center — registration form INSTANCE, 474x571 */}
+    <main className="flex min-h-screen w-full bg-[#07070D] text-white [color-scheme:dark] min-[1420px]:h-screen min-[1420px]:overflow-hidden">
+      {/* Left — independently scrollable column (50vw on desktop). */}
+      <div className="flex min-h-screen w-full min-w-0 flex-1 min-[1420px]:h-screen min-[1420px]:w-[50vw] min-[1420px]:flex-none min-[1420px]:overflow-y-auto">
+        {/* Center — registration form INSTANCE, 474x571, centered both axes in the 50vw column. */}
         <section
           aria-labelledby="register-heading"
-          className="flex min-w-0 flex-1 items-center justify-center px-6 py-14 sm:px-10 min-[1420px]:justify-start min-[1420px]:pl-[8.875rem]"
+          className="m-auto flex w-full justify-center px-6 py-14 sm:px-10"
         >
-          {/* Frame 89: vertical, gap 48 */}
-          <div className="flex w-full max-w-[29.625rem] flex-col items-center gap-12">
+          {/* Centered via parent justify-center + mx-auto so zoom-out
+              keeps it centered instead of drifting left. */}
+          <div className="mx-auto flex w-full max-w-[29.625rem] flex-col items-center justify-center gap-12">
             <img
               src="/figma/form-logo.svg"
               alt=""
@@ -71,10 +72,9 @@ export default function RegisterPage() {
             </p>
           </div>
         </section>
-
-          <DecorativePanel />
-        </div>
       </div>
+
+      <DecorativePanel />
     </main>
   );
 }

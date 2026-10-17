@@ -1,0 +1,47 @@
+{
+  "expectations": [
+    {
+      "text": "Footer snippet applies symmetric 10.8px (0.675rem) left and right insets",
+      "passed": true,
+      "evidence": "Found in member-footer.tsx: '<div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">'"
+    },
+    {
+      "text": "Transcript derives the exact tenth-pixel footer band 756.4 to 821.2",
+      "passed": false,
+      "evidence": "transcript.md missing from transcript.md: '756.4', '821.2'"
+    },
+    {
+      "text": "Transcript states PASS as percent < 0.01 with the pixelmatch threshold",
+      "passed": false,
+      "evidence": "transcript.md missing from transcript.md: 'percent < 0.01'"
+    },
+    {
+      "text": "Transcript lists pre-gate verification (tsc, lint, build) before claiming PASS",
+      "passed": false,
+      "evidence": "transcript.md missing from transcript.md: 'tsc', 'lint', 'build'"
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 4549,
+    "transcript_chars": 3333
+  },
+  "timing": {},
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

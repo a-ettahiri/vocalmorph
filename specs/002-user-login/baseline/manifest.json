@@ -1,0 +1,29 @@
+{
+  "fileKey": "EqW1vze2r9eFrdUdi8ajzp",
+  "nodeId": "496:847",
+  "nodeName": "Login Page",
+  "exportedAt": "2026-10-10T02:31:15.979Z",
+  "zipName": "saas_app_20261010-023111.zip",
+  "pluginVersion": "1.3.0",
+  "frameBox": { "width": 1440, "height": 850 },
+  "renderBounds": { "width": 1448, "height": 858 },
+  "baseline": { "width": 2880, "height": 1700 },
+  "deviceScaleFactor": 2,
+  "crop": {
+    "x": 8,
+    "y": 0,
+    "width": 2880,
+    "height": 1700,
+    "reason": "remove renderBounds padding from the frame's canvas-only DROP_SHADOW (x-4/+4, invisible in product); uncropped export preserved in export/unpacked/"
+  },
+  "assets": {
+    "login-logo.svg": "I498:1031;498:987 VECTOR 45x44 (rounded-square star mark, LF-only vs register CRLF)",
+    "group-19.svg": "512:1353 GROUP Group 19 710x850 (Rectangle 69 #1A1922 + Group 17 play mark #282730)",
+    "login-google-g.svg": "I498:1031;498:999 FRAME devicon:google 22x22"
+  },
+  "excluded": {
+    "496:889 Frame 45": "visible sidebar contamination outside frame (x=51); its image fill 2d4dc78b (Ellipse 2 avatar, 977KB) not wired",
+    "I498:1031;498:1005 Frame 83 See other options": "component variant overlapping Google button in Frame 86; rendered PNG shows Google only"
+  },
+  "via": "Framelink Exporter plugin + local unzip (no API calls)"
+}

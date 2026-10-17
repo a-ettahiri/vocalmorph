@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "figma-to-nextjs", "runs": [{"id": "eval-1-login-screen-with_skill", "prompt": "Build the /login screen from my Figma design (node 496:847, Framelink ZIP saas_app_20261010-023111.zip). Unpack the export to specs/002-user-login, copy SVGs byte-identical to public/figma, create app/login/page.tsx + login-form.tsx per stack rules, and run the pixel-diff gate at 1440x850.", "eval_id": 1, "outputs": [{"name": "login-form.tsx", "type": "text", "content": "'use client';\n\nimport { useState, type FormEvent } from 'react';\n\ntype Status = 'idle' | 'error';\n\nexport default function LoginForm() {\n  const [email, setEmail] = useState('');\n  const [status, setStatus] = useState<Status>('idle');\n\n  function handleSubmit(e: FormEvent<HTMLFormElement>) {\n    e.preventDefault();\n    const value = email.trim();\n    const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);\n    if (!valid) {\n      setStatus('error');\n      return;\n    }\n    setStatus('idle');\n    // UI-only stub: no backend in this release.\n    console.log('[login stub] email continue:', value);\n  }\n\n  function handleGoogle() {\n    // UI-only stub.\n    console.log('[login stub] continue with google');\n  }\n\n  return (\n    <div className=\"flex w-full flex-col gap-6\">\n      {/* Google button \u00e2\u20ac\u201d Frame 82: 474x46, pad 12/16, gap 8, radius 99, 1px #9E9EA8.\n          Frame 83 \"See other options\" is an excluded overlapping variant (manifest) \u00e2\u20ac\u201d Google only. */}\n      <button\n        type=\"button\"\n        onClick={handleGoogle}\n        className=\"flex h-[2.875rem] min-h-[44px] w-full items-center justify-center gap-2 rounded-[6.1875rem] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n      >\n        <img\n          src=\"/figma/login-google-g.svg\"\n          alt=\"\"\n          width={22}\n          height={22}\n          className=\"h-[1.375rem] w-[1.375rem] flex-none\"\n        />\n        <span className=\"text-[1.125rem] font-medium leading-none tracking-[-0.0225rem] text-[#F0F0F7]\">\n          Continue with Google\n        </span>\n      </button>\n\n      {/* Divider \u00e2\u20ac\u201d Frame 84: 474x19, gap 19, 210px lines #B3B3BC */}\n      <div className=\"flex h-[1.1875rem] w-full items-center gap-[1.1875rem]\" aria-hidden=\"true\">\n        <span className=\"h-px w-full max-w-[13.125rem] flex-1 bg-[#B3B3BC]\" />\n        <span className=\"text-[1rem] font-medium leading-none tracking-[-0.02rem] text-[#B3B3BC]\">\n          or\n        </span>\n        <span className=\"h-px w-full max-w-[13.125rem] flex-1 bg-[#B3B3BC]\" />\n      </div>\n\n      {/* Frame 87: vertical, gap 16 */}\n      <div className=\"flex w-full flex-col gap-4\">\n        <form onSubmit={handleSubmit} className=\"flex w-full flex-col gap-4\" noValidate>\n          {/* Email input \u00e2\u20ac\u201d Frame 85: 474x51, #1A1A23, radius 16, pad 16 */}\n          <label htmlFor=\"login-email\" className=\"sr-only\">\n            Email address\n          </label>\n          <input\n            id=\"login-email\"\n            name=\"email\"\n            type=\"email\"\n            autoComplete=\"email\"\n            placeholder=\"Enter email address\"\n            value={email}\n            onChange={(e) => {\n              setEmail(e.target.value);\n              if (status !== 'idle') setStatus('idle');\n            }}\n            aria-invalid={status === 'error'}\n            aria-describedby={status === 'error' ? 'login-email-error' : undefined}\n            className=\"h-[3.1875rem] min-h-[44px] w-full rounded-2xl border border-transparent bg-[#1A1A23] px-4 text-[1rem] font-medium tracking-[0.03rem] text-[#EFEFF7] placeholder:text-[#B3B3BC] focus:border-[#9E9EA8] focus:outline-none\"\n          />\n          {status === 'error' && (\n            <p id=\"login-email-error\" role=\"alert\" className=\"-mt-2 text-[0.875rem] font-medium text-[#FF8A8A]\">\n              Please enter a valid email address.\n            </p>\n          )}\n\n          {/* Continue \u00e2\u20ac\u201d Frame 35: 474x51, #F0F0F7, radius 89.1 */}\n          <button\n            type=\"submit\"\n            className=\"flex h-[3.1875rem] min-h-[44px] w-full items-center justify-center rounded-[5.5688rem] bg-[#F0F0F7] px-[2.7rem] py-[0.9rem] text-center text-[1.125rem] font-semibold leading-none tracking-[-0.0225rem] text-[#07070D] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n          >\n            Continue\n          </button>\n        </form>\n\n        {/* Legal \u00e2\u20ac\u201d 474x17, 14px Regular, ls -0.7, center; Terms/Privacy underlined per baseline */}\n        <p className=\"w-full text-center text-[0.875rem] font-normal leading-[1.05rem] tracking-[-0.0438rem] text-[#C8C8D1]\">\n          By continuing, you agree to the app{' '}\n          <a href=\"#\" className=\"text-[#C8C8D1] underline hover:no-underline\">\n            Terms of Service\n          </a>{' '}\n          and{' '}\n          <a href=\"#\" className=\"text-[#C8C8D1] underline hover:no-underline\">\n            Privacy Policy\n          </a>\n          .\n        </p>\n      </div>\n    </div>\n  );\n}\n"}, {"name": "page.tsx", "type": "text", "content": "import type { Metadata } from 'next';\nimport LoginForm from './login-form';\n\nexport const metadata: Metadata = {\n  title: 'Welcome back',\n  description:\n    'Log in to access iconic voices in studio quality.',\n};\n\n/** Right decorative panel \u00e2\u20ac\u201d fixed 50vw x 100vh, never scrolls with the form. */\nfunction DecorativePanel() {\n  return (\n    <aside\n      aria-hidden=\"true\"\n      className=\"fixed right-0 top-0 hidden h-screen w-[50vw] flex-none items-center justify-center overflow-hidden bg-[#1A1922] min-[1420px]:flex\"\n    >\n      <img\n        src=\"/figma/group-19.svg\"\n        alt=\"\"\n        width={710}\n        height={850}\n        className=\"h-full w-full object-cover\"\n      />\n    </aside>\n  );\n}\n\nexport default function LoginPage() {\n  return (\n    <main className=\"flex min-h-screen w-full bg-[#07070D] text-white [color-scheme:dark] min-[1420px]:h-screen min-[1420px]:overflow-hidden\">\n      {/* Left \u00e2\u20ac\u201d independently scrollable column (50vw on desktop). */}\n      <div className=\"flex min-h-screen w-full min-w-0 flex-1 min-[1420px]:h-screen min-[1420px]:w-[50vw] min-[1420px]:flex-none min-[1420px]:overflow-y-auto\">\n        {/* Center \u00e2\u20ac\u201d login form INSTANCE, 474px wide, centered both axes in the 50vw column. */}\n        <section\n          aria-labelledby=\"login-heading\"\n          className=\"m-auto flex w-full justify-center px-6 py-14 sm:px-10\"\n        >\n          {/* Centered via parent justify-center + mx-auto so zoom-out\n              keeps it centered instead of drifting left. */}\n          <div className=\"mx-auto flex w-full max-w-[29.625rem] flex-col items-center justify-center gap-12\">\n            <img\n              src=\"/figma/login-logo.svg\"\n              alt=\"\"\n              width={45}\n              height={44}\n              className=\"h-11 w-[2.8125rem]\"\n            />\n\n            {/* Heading \u00e2\u20ac\u201d 474x44, no subtitle on this screen */}\n            <h1\n              id=\"login-heading\"\n              className=\"w-full text-center text-[2.25rem] font-extrabold leading-[2.7rem] tracking-[-0.0675rem] text-[#F0F0F7]\"\n            >\n              Welcome back\n            </h1>\n\n            {/* Frame 88: vertical, gap 24 */}\n            <LoginForm />\n          </div>\n        </section>\n      </div>\n\n      <DecorativePanel />\n    </main>\n  );\n}\n"}], "grading": null}, {"id": "eval-1-login-screen-without_skill", "prompt": "Build the /login screen from my Figma design (node 496:847, Framelink ZIP saas_app_20261010-023111.zip). Unpack the export to specs/002-user-login, copy SVGs byte-identical to public/figma, create app/login/page.tsx + login-form.tsx per stack rules, and run the pixel-diff gate at 1440x850.", "eval_id": 1, "outputs": [{"name": "login-form.tsx", "type": "text", "content": "'use client';\n\nimport { useState, type FormEvent } from 'react';\n\ntype Status = 'idle' | 'error';\n\nexport default function LoginForm() {\n  const [email, setEmail] = useState('');\n  const [status, setStatus] = useState<Status>('idle');\n\n  function handleSubmit(e: FormEvent<HTMLFormElement>) {\n    e.preventDefault();\n    const value = email.trim();\n    const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);\n    if (!valid) {\n      setStatus('error');\n      return;\n    }\n    setStatus('idle');\n    // UI-only stub: no backend in this release.\n    console.log('[login stub] email continue:', value);\n  }\n\n  function handleGoogle() {\n    // UI-only stub.\n    console.log('[login stub] continue with google');\n  }\n\n  return (\n    <div className=\"flex w-full flex-col gap-6\">\n      {/* Google button \u00e2\u20ac\u201d Frame 82: 474x46, pad 12/16, gap 8, radius 99, 1px #9E9EA8 */}\n      <button\n        type=\"button\"\n        onClick={handleGoogle}\n        className=\"flex h-[2.875rem] min-h-[44px] w-full items-center justify-center gap-2 rounded-[6.1875rem] border border-[#9E9EA8] bg-transparent px-4 py-3 text-left transition-colors hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n      >\n        <img\n          src=\"/figma/login-google-g.svg\"\n          alt=\"\"\n          width={22}\n          height={22}\n          className=\"h-[1.375rem] w-[1.375rem] flex-none\"\n        />\n        <span className=\"text-[1.125rem] font-medium leading-none text-[#EFEFF7]\">\n          Continue with Google\n        </span>\n      </button>\n\n      {/* Divider \u00e2\u20ac\u201d Frame 84: 474x19, gap 19, 210px lines #B3B3BD */}\n      <div className=\"flex h-[1.1875rem] w-full items-center gap-[1.1875rem]\" aria-hidden=\"true\">\n        <span className=\"h-px w-full max-w-[13.125rem] flex-1 bg-[#B3B3BD]\" />\n        <span className=\"text-[1rem] font-medium leading-none text-[#B3B3BD]\">\n          or\n        </span>\n        <span className=\"h-px w-full max-w-[13.125rem] flex-1 bg-[#B3B3BD]\" />\n      </div>\n\n      {/* Frame 87: vertical, gap 16 */}\n      <div className=\"flex w-full flex-col gap-4\">\n        <form onSubmit={handleSubmit} className=\"flex w-full flex-col gap-4\" noValidate>\n          {/* Email input \u00e2\u20ac\u201d Frame 85: 474x51, #1A1A23, radius 16, pad 16 */}\n          <label htmlFor=\"login-email\" className=\"sr-only\">\n            Email address\n          </label>\n          <input\n            id=\"login-email\"\n            name=\"email\"\n            type=\"email\"\n            autoComplete=\"email\"\n            placeholder=\"Enter email address\"\n            value={email}\n            onChange={(e) => {\n              setEmail(e.target.value);\n              if (status !== 'idle') setStatus('idle');\n            }}\n            aria-invalid={status === 'error'}\n            aria-describedby={status === 'error' ? 'login-email-error' : undefined}\n            className=\"h-[3.1875rem] min-h-[44px] w-full rounded-2xl border border-transparent bg-[#1A1A23] px-4 text-[1rem] font-medium tracking-[0.03rem] text-[#EFEFF7] placeholder:text-[#B3B3BD] focus:border-[#9E9EA8] focus:outline-none\"\n          />\n          {status === 'error' && (\n            <p id=\"login-email-error\" role=\"alert\" className=\"-mt-2 text-[0.875rem] font-medium text-[#FF8A8A]\">\n              Please enter a valid email address.\n            </p>\n          )}\n\n          {/* Continue \u00e2\u20ac\u201d Frame 35: 474x50.8, #EFEFF7, radius 89.1 */}\n          <button\n            type=\"submit\"\n            className=\"flex h-[3.1875rem] min-h-[44px] w-full items-center justify-center rounded-[5.5688rem] bg-[#EFEFF7] px-[2.7rem] py-[0.9rem] text-center text-[1.125rem] font-semibold leading-none text-[#07070D] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n          >\n            Continue\n          </button>\n        </form>\n\n        {/* Legal \u00e2\u20ac\u201d 474x17, base #C9C9D1 14px Regular, links #DFDFE6 Bold underline, center */}\n        <p className=\"w-full text-center text-[0.875rem] font-normal leading-[1.05rem] tracking-[-0.0438rem] text-[#C9C9D1]\">\n          By continuing, you agree to the app{' '}\n          <a href=\"#\" className=\"font-bold text-[#DFDFE6] underline hover:no-underline\">\n            Terms of Service\n          </a>{' '}\n          and{' '}\n          <a href=\"#\" className=\"font-semibold text-[#DFDFE6] underline hover:no-underline\">\n            Privacy Policy\n          </a>\n          .\n        </p>\n      </div>\n    </div>\n  );\n}\n"}, {"name": "page.tsx", "type": "text", "content": "import type { Metadata } from 'next';\nimport LoginForm from './login-form';\n\nexport const metadata: Metadata = {\n  title: 'Welcome back',\n  description: 'Log in to access iconic voices in studio quality.',\n};\n\n/** Right video placeholder \u00e2\u20ac\u201d fixed 50vw x 100vh, never scrolls with the form. */\nfunction DecorativePanel() {\n  return (\n    <aside\n      aria-hidden=\"true\"\n      className=\"fixed right-0 top-0 hidden h-screen w-[50vw] flex-none items-center justify-center overflow-hidden bg-[#1A1922] min-[1420px]:flex\"\n    >\n      <img\n        src=\"/figma/group-19.svg\"\n        alt=\"\"\n        width={710}\n        height={850}\n        className=\"h-full w-full object-cover\"\n      />\n    </aside>\n  );\n}\n\nexport default function LoginPage() {\n  return (\n    <main className=\"flex min-h-screen w-full bg-[#07070D] text-white [color-scheme:dark] min-[1420px]:h-screen min-[1420px]:overflow-hidden\">\n      {/* Left \u00e2\u20ac\u201d independently scrollable column (50vw on desktop). */}\n      <div className=\"flex min-h-screen w-full min-w-0 flex-1 min-[1420px]:h-screen min-[1420px]:w-[50vw] min-[1420px]:flex-none min-[1420px]:overflow-y-auto\">\n        {/* Center \u00e2\u20ac\u201d login form INSTANCE, 474 wide, centered both axes in the 50vw column. */}\n        <section\n          aria-labelledby=\"login-heading\"\n          className=\"m-auto flex w-full justify-center px-6 py-14 sm:px-10\"\n        >\n          {/* Centered via parent justify-center + mx-auto so zoom-out\n              keeps it centered instead of drifting left. */}\n          <div className=\"mx-auto flex w-full max-w-[29.625rem] flex-col items-center justify-center gap-12\">\n            <img\n              src=\"/figma/login-logo.svg\"\n              alt=\"\"\n              width={45}\n              height={44}\n              className=\"h-11 w-[2.8125rem]\"\n            />\n\n            {/* Heading \u00e2\u20ac\u201d 474x44, #F0F0F7, 36px ExtraBold, center */}\n            <h1\n              id=\"login-heading\"\n              className=\"w-full text-center text-[2.25rem] font-extrabold leading-[2.7rem] tracking-[-0.0675rem] text-[#F0F0F7]\"\n            >\n              Welcome back\n            </h1>\n\n            {/* Frame 88: vertical, gap 24 */}\n            <LoginForm />\n          </div>\n        </section>\n      </div>\n\n      <DecorativePanel />\n    </main>\n  );\n}\n"}], "grading": null}, {"id": "eval-2-sidebar-route-with_skill", "prompt": "Add the left sidebar (Frame 46, 266x850 @ x=48) to a new /cookies-policy route so I can check it visually. Use verbatim sidebar SVGs, keep 48px page sides, sticky sidebar, and verify with the sidebar-region pixel-diff script.", "eval_id": 2, "outputs": [{"name": "app-sidebar.tsx", "type": "text", "content": "/** Shared app sidebar \u00e2\u20ac\u201d 1:1 of Figma Cookie Policy Page Frame 46 (453:3415).\n *  Inner Frame 44: 225px wide, 850 tall, pt/pb 28.8. Byte-identical SVGs\n *  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).\n *  Frame 45 (vis=false rail) is contamination \u00e2\u20ac\u201d never wired here. */\n\nconst NAV = [\n  { label: 'Home', href: '/', icon: '/figma/sidebar-home.svg', active: false, textClass: 'font-bold text-[#F0F0F7]' },\n  { label: 'Search', href: '/search', icon: '/figma/sidebar-search.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },\n  { label: 'Library', href: '/library', icon: '/figma/sidebar-library.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },\n  { label: 'History', href: '/history', icon: '/figma/sidebar-history.svg', active: true, textClass: 'font-medium text-[#F0F0F7]' },\n  { label: 'Support', href: '/support', icon: '/figma/sidebar-support.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },\n] as const;\n\nexport default function AppSidebar({ active = 'History' }: { active?: string }) {\n  return (\n    <aside\n      aria-label=\"Primary\"\n      className=\"flex h-screen w-[16.625rem] flex-none items-stretch justify-start overflow-hidden\"\n    >\n      {/* Frame 44 \u00e2\u20ac\u201d 225px column, space-between, py 28.8 */}\n      <div className=\"flex w-[14.0625rem] flex-none flex-col justify-between py-[1.8rem]\">\n        {/* Top \u00e2\u20ac\u201d logo + generate + nav */}\n        <div className=\"flex w-[11.7rem] flex-col\">\n          <img\n            src=\"/figma/sidebar-logo.svg\"\n            alt=\"VocalMorph\"\n            width={119}\n            height={42}\n            className=\"h-[2.625rem] w-[7.4375rem] flex-none\"\n          />\n\n          {/* Frame 36 \u00e2\u20ac\u201d nav stack, gap 28.8, mt 36 */}\n          <div className=\"mt-[2.25rem] flex flex-col gap-[1.8rem]\">\n            {/* Generate pill \u00e2\u20ac\u201d 187.2x50.8, bg #F0F0F7, radius 89.1 */}\n            <a\n              href=\"/generate\"\n              className=\"flex h-[3.175rem] w-[11.7rem] flex-none items-center justify-center gap-[0.45rem] rounded-full bg-[#F0F0F7] px-[2.7rem] py-[0.9rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n            >\n              <img\n                src=\"/figma/sidebar-generate.svg\"\n                alt=\"\"\n                width={14}\n                height={14}\n                className=\"h-[0.84375rem] w-[0.84375rem] flex-none\"\n              />\n              <span className=\"text-[1.125rem] font-bold leading-[1.35rem] tracking-[-0.0225rem] text-[#07070D]\">\n                Generate\n              </span>\n            </a>\n\n            {/* Frame 30 \u00e2\u20ac\u201d page links, gap 14.4 */}\n            <nav aria-label=\"Pages\" className=\"flex flex-col gap-[0.9rem]\">\n              {NAV.map((item) =>\n                item.active || active === item.label ? (\n                  <a\n                    key={item.label}\n                    href={item.href}\n                    aria-current=\"page\"\n                    className=\"flex h-[2.7675rem] w-[8.7625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n                  >\n                    <img\n                      src={item.icon}\n                      alt=\"\"\n                      width={26}\n                      height={26}\n                      className=\"h-auto w-[1.575rem] flex-none\"\n                    />\n                    <span\n                      className={`ml-[0.9rem] text-[1.125rem] leading-[1.35rem] tracking-[-0.0225rem] ${item.textClass}`}\n                    >\n                      {item.label}\n                    </span>\n                  </a>\n                ) : (\n                  <a\n                    key={item.label}\n                    href={item.href}\n                    className=\"flex min-h-[2.925rem] flex-none items-center pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n                  >\n                    <img\n                      src={item.icon}\n                      alt=\"\"\n                      width={26}\n                      height={26}\n                      className=\"h-auto w-[1.575rem] flex-none\"\n                    />\n                    <span\n                      className={`ml-[0.9rem] text-[1.125rem] leading-[1.35rem] tracking-[-0.0225rem] ${item.textClass}`}\n                    >\n                      {item.label}\n                    </span>\n                  </a>\n                ),\n              )}\n            </nav>\n          </div>\n        </div>\n\n        {/* Bottom \u00e2\u20ac\u201d Frame 47: pro card + member footer */}\n        <div className=\"flex w-[14.0625rem] flex-col\">\n          {/* Group 10 \u00e2\u20ac\u201d 225x129.6: art (IMAGE fill, CROP, transform\n              [[0.9094516,0,~0],[0,0.34922943,0.19610037]]) + button.\n              Crop window u[0,0.909] v[0.196,0.545] stretched to 225x86.4:\n              img 247.4px sq. offset top -48.5px. */}\n          <div className=\"relative w-[14.0625rem]\">\n            <div className=\"relative h-[5.4rem] w-[14.0625rem] overflow-hidden rounded-t-[1.5rem]\">\n              <img\n                src=\"/figma/sidebar-pro-bg.png\"\n                alt=\"\"\n                width={746}\n                height={384}\n                className=\"absolute left-0 top-[-3.0322rem] h-[15.4625rem] w-[15.4625rem] max-w-none flex-none\"\n              />\n            </div>\n            <img\n              src=\"/figma/sidebar-pro-crown.svg\"\n              alt=\"\"\n              width={36}\n              height={36}\n              className=\"absolute left-[0.9rem] top-[0.9rem] h-[2.25rem] w-[2.25rem]\"\n            />\n            <a\n              href=\"/pro\"\n              className=\"flex h-[2.7rem] w-[14.0625rem] flex-none items-center justify-center rounded-b-[1.5rem] bg-[#25252C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n            >\n              <span className=\"text-[1.0125rem] font-semibold leading-[1.215rem] tracking-[-0.02025rem] text-[#F0F0F7]\">\n                Upgrade to Pro\n              </span>\n            </a>\n          </div>\n\n          {/* Frame 42 \u00e2\u20ac\u201d member footer, 225x64.8, bg #1A1A23, radius 89.1.\n              Inner Frame 40 is 203.4 wide: 10.8px inset on BOTH sides. */}\n          <div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">\n            <img\n              src=\"/figma/sidebar-avatar.png\"\n              alt=\"\"\n              width={43}\n              height={43}\n              className=\"h-[2.7rem] w-[2.7rem] flex-none rounded-full object-cover\"\n            />\n            <div className=\"ml-[0.675rem] flex min-w-0 flex-col\">\n              <span className=\"truncate text-[1.0125rem] font-semibold leading-[1.215rem] text-[#F0F0F7]\">\n                Member\n              </span>\n              <span className=\"text-[0.7875rem] font-medium leading-[0.945rem] text-[#B3B3BD]\">\n                Trial\n              </span>\n            </div>\n            <img\n              src=\"/figma/sidebar-more.svg\"\n              alt=\"\"\n              width={79}\n              height={29}\n              className=\"ml-auto h-[1.8rem] w-[4.95rem] flex-none\"\n            />\n          </div>\n        </div>\n      </div>\n    </aside>\n  );\n}\n"}, {"name": "page.tsx", "type": "text", "content": "import type { Metadata } from 'next';\nimport AppSidebar from '@/components/app-sidebar';\n\nexport const metadata: Metadata = {\n  title: 'Cookie Policy',\n  description:\n    'How VocalMask uses cookies to deliver personalized experiences and improve AI-powered song generation.',\n};\n\n/** Visual-check route for the shared sidebar (Frame 46).\n *  Right column is a lightweight stub of the real 775px content \u00e2\u20ac\u201d\n *  full 4564px transcription is a follow-up task. */\nexport default function CookiesPolicyPage() {\n  return (\n    <main className=\"flex min-h-screen w-full bg-[#07070D] px-[3rem] text-white [color-scheme:dark]\">\n      <div className=\"sticky top-0 h-screen flex-none\">\n        <AppSidebar />\n      </div>\n\n      {/* Right column \u00e2\u20ac\u201d navbar stub + content stub */}\n      <div className=\"flex min-w-0 flex-1 flex-col\">\n        {/* navbar stub (453:3469, bg #07070D) */}\n        <header className=\"flex h-[6.1875rem] flex-none items-center justify-end pr-10\">\n          <div className=\"flex items-center gap-2\">\n            <span className=\"text-[2rem] font-semibold text-white\">12</span>\n            <span className=\"text-[1.625rem] text-white\">Credit</span>\n          </div>\n        </header>\n\n        {/* Content stub \u00e2\u20ac\u201d 775px article, real Figma copy */}\n        <article className=\"w-full max-w-[48.4375rem] px-10 pb-24\">\n          <h1 className=\"text-[2.25rem] font-extrabold leading-[3.25rem] tracking-[-0.0675rem] text-white\">\n            Privacy Policy\n          </h1>\n          <p className=\"mt-6 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n            At VocalMask we respect your privacy and are committed to\n            protecting your personal data. This policy explains how we handle\n            your information when you use our AI-powered personalized\n            children&apos;s song generation services.\n          </p>\n          <p className=\"mt-6 text-[0.875rem] text-[#B3B3BD]\">\n            Last updated: April 30, 2026\n          </p>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              What are cookies\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              Welcome to VocalMask (vocalmask.com). We are committed to\n              protecting your privacy and ensuring the security of your\n              personal information. This privacy policy explains how we\n              collect, use, store, and protect your data when you use our\n              AI-powered personalized children&apos;s song generation\n              services.\n            </p>\n          </section>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              Why we use cookies\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              At VocalMask, cookies help us deliver personalized experiences,\n              maintain your session security, and continuously improve our\n              AI-powered song generation services based on user interactions.\n            </p>\n          </section>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              Types of Cookies We Use\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              We use different types of cookies to provide and improve our\n              services.\n            </p>\n            <h3 className=\"mt-6 text-[1.125rem] font-semibold text-white\">\n              Essential cookies\n            </h3>\n            <p className=\"mt-2 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              User authentication and session management, security and fraud\n              prevention, basic site navigation and functionality, load\n              balancing and performance.\n            </p>\n            <h3 className=\"mt-6 text-[1.125rem] font-semibold text-white\">\n              Analytics cookies\n            </h3>\n            <p className=\"mt-2 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              Usage patterns and popular features, performance monitoring and\n              optimization, error tracking and bug identification, service\n              improvement insights.\n            </p>\n          </section>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              Contact us about cookies\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              If you have questions about our cookie usage, contact us at\n              support@vocalmask.com. We respond to cookie-related inquiries\n              within 24 hours.\n            </p>\n          </section>\n        </article>\n      </div>\n    </main>\n  );\n}\n"}], "grading": null}, {"id": "eval-2-sidebar-route-without_skill", "prompt": "Add the left sidebar (Frame 46, 266x850 @ x=48) to a new /cookies-policy route so I can check it visually. Use verbatim sidebar SVGs, keep 48px page sides, sticky sidebar, and verify with the sidebar-region pixel-diff script.", "eval_id": 2, "outputs": [{"name": "app-sidebar.tsx", "type": "text", "content": "/** Shared app sidebar \u00e2\u20ac\u201d 1:1 of Figma Cookie Policy Page Frame 46 (453:3415).\n *  Inner Frame 44: 225px wide, 850 tall, pt/pb 28.8. Byte-identical SVGs\n *  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).\n *  Frame 45 (vis=false rail) is contamination \u00e2\u20ac\u201d never wired here. */\n\nconst NAV = [\n  { label: 'Home', href: '/', icon: '/figma/sidebar-home.svg', active: false, textClass: 'font-bold text-[#F0F0F7]' },\n  { label: 'Search', href: '/search', icon: '/figma/sidebar-search.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },\n  { label: 'Library', href: '/library', icon: '/figma/sidebar-library.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },\n  { label: 'History', href: '/history', icon: '/figma/sidebar-history.svg', active: true, textClass: 'font-medium text-[#F0F0F7]' },\n  { label: 'Support', href: '/support', icon: '/figma/sidebar-support.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },\n] as const;\n\nexport default function AppSidebar({ active = 'History' }: { active?: string }) {\n  return (\n    <aside\n      aria-label=\"Primary\"\n      className=\"flex h-screen w-[16.625rem] flex-none items-stretch justify-start overflow-hidden\"\n    >\n      {/* Frame 44 \u00e2\u20ac\u201d 225px column, space-between, py 28.8 */}\n      <div className=\"flex w-[14.0625rem] flex-none flex-col justify-between py-[1.8rem]\">\n        {/* Top \u00e2\u20ac\u201d logo + generate + nav */}\n        <div className=\"flex w-[11.7rem] flex-col\">\n          <img\n            src=\"/figma/sidebar-logo.svg\"\n            alt=\"VocalMorph\"\n            width={119}\n            height={42}\n            className=\"h-[2.625rem] w-[7.4375rem] flex-none\"\n          />\n\n          {/* Frame 36 \u00e2\u20ac\u201d nav stack, gap 28.8, mt 36 */}\n          <div className=\"mt-[2.25rem] flex flex-col gap-[1.8rem]\">\n            {/* Generate pill \u00e2\u20ac\u201d 187.2x50.8, bg #F0F0F7, radius 89.1 */}\n            <a\n              href=\"/generate\"\n              className=\"flex h-[3.175rem] w-[11.7rem] flex-none items-center justify-center gap-[0.45rem] rounded-full bg-[#F0F0F7] px-[2.7rem] py-[0.9rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n            >\n              <img\n                src=\"/figma/sidebar-generate.svg\"\n                alt=\"\"\n                width={14}\n                height={14}\n                className=\"h-[0.84375rem] w-[0.84375rem] flex-none\"\n              />\n              <span className=\"text-[1.125rem] font-bold leading-[1.35rem] tracking-[-0.0225rem] text-[#07070D]\">\n                Generate\n              </span>\n            </a>\n\n            {/* Frame 30 \u00e2\u20ac\u201d page links, gap 14.4 */}\n            <nav aria-label=\"Pages\" className=\"flex flex-col gap-[0.9rem]\">\n              {NAV.map((item) =>\n                item.active || active === item.label ? (\n                  <a\n                    key={item.label}\n                    href={item.href}\n                    aria-current=\"page\"\n                    className=\"flex h-[2.7675rem] w-[8.7625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n                  >\n                    <img\n                      src={item.icon}\n                      alt=\"\"\n                      width={26}\n                      height={26}\n                      className=\"h-auto w-[1.575rem] flex-none\"\n                    />\n                    <span\n                      className={`ml-[0.9rem] text-[1.125rem] leading-[1.35rem] tracking-[-0.0225rem] ${item.textClass}`}\n                    >\n                      {item.label}\n                    </span>\n                  </a>\n                ) : (\n                  <a\n                    key={item.label}\n                    href={item.href}\n                    className=\"flex min-h-[2.925rem] flex-none items-center pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n                  >\n                    <img\n                      src={item.icon}\n                      alt=\"\"\n                      width={26}\n                      height={26}\n                      className=\"h-auto w-[1.575rem] flex-none\"\n                    />\n                    <span\n                      className={`ml-[0.9rem] text-[1.125rem] leading-[1.35rem] tracking-[-0.0225rem] ${item.textClass}`}\n                    >\n                      {item.label}\n                    </span>\n                  </a>\n                ),\n              )}\n            </nav>\n          </div>\n        </div>\n\n        {/* Bottom \u00e2\u20ac\u201d Frame 47: pro card + member footer */}\n        <div className=\"flex w-[14.0625rem] flex-col\">\n          {/* Group 10 \u00e2\u20ac\u201d 225x129.6: art (IMAGE fill, CROP, transform\n              [[0.9094516,0,~0],[0,0.34922943,0.19610037]]) + button.\n              Crop window u[0,0.909] v[0.196,0.545] stretched to 225x86.4:\n              img 247.4px sq. offset top -48.5px. */}\n          <div className=\"relative w-[14.0625rem]\">\n            <div className=\"relative h-[5.4rem] w-[14.0625rem] overflow-hidden rounded-t-[1.5rem]\">\n              <img\n                src=\"/figma/sidebar-pro-bg.png\"\n                alt=\"\"\n                width={746}\n                height={384}\n                className=\"absolute left-0 top-[-3.0322rem] h-[15.4625rem] w-[15.4625rem] max-w-none flex-none\"\n              />\n            </div>\n            <img\n              src=\"/figma/sidebar-pro-crown.svg\"\n              alt=\"\"\n              width={36}\n              height={36}\n              className=\"absolute left-[0.9rem] top-[0.9rem] h-[2.25rem] w-[2.25rem]\"\n            />\n            <a\n              href=\"/pro\"\n              className=\"flex h-[2.7rem] w-[14.0625rem] flex-none items-center justify-center rounded-b-[1.5rem] bg-[#25252C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white\"\n            >\n              <span className=\"text-[1.0125rem] font-semibold leading-[1.215rem] tracking-[-0.02025rem] text-[#F0F0F7]\">\n                Upgrade to Pro\n              </span>\n            </a>\n          </div>\n\n          {/* Frame 42 \u00e2\u20ac\u201d member footer, 225x64.8, bg #1A1A23, radius 89.1.\n              Inner Frame 40 is 203.4 wide: 10.8px inset on BOTH sides. */}\n          <div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">\n            <img\n              src=\"/figma/sidebar-avatar.png\"\n              alt=\"\"\n              width={43}\n              height={43}\n              className=\"h-[2.7rem] w-[2.7rem] flex-none rounded-full object-cover\"\n            />\n            <div className=\"ml-[0.675rem] flex min-w-0 flex-col\">\n              <span className=\"truncate text-[1.0125rem] font-semibold leading-[1.215rem] text-[#F0F0F7]\">\n                Member\n              </span>\n              <span className=\"text-[0.7875rem] font-medium leading-[0.945rem] text-[#B3B3BD]\">\n                Trial\n              </span>\n            </div>\n            <img\n              src=\"/figma/sidebar-more.svg\"\n              alt=\"\"\n              width={79}\n              height={29}\n              className=\"ml-auto h-[1.8rem] w-[4.95rem] flex-none\"\n            />\n          </div>\n        </div>\n      </div>\n    </aside>\n  );\n}\n"}, {"name": "page.tsx", "type": "text", "content": "import type { Metadata } from 'next';\nimport AppSidebar from '@/components/app-sidebar';\n\nexport const metadata: Metadata = {\n  title: 'Cookie Policy',\n  description:\n    'How VocalMask uses cookies to deliver personalized experiences and improve AI-powered song generation.',\n};\n\n/** Visual-check route for the shared sidebar (Frame 46).\n *  Right column is a lightweight stub of the real 775px content \u00e2\u20ac\u201d\n *  full 4564px transcription is a follow-up task. */\nexport default function CookiesPolicyPage() {\n  return (\n    <main className=\"flex min-h-screen w-full bg-[#07070D] px-[3rem] text-white [color-scheme:dark]\">\n      <div className=\"sticky top-0 h-screen flex-none\">\n        <AppSidebar />\n      </div>\n\n      {/* Right column \u00e2\u20ac\u201d navbar stub + content stub */}\n      <div className=\"flex min-w-0 flex-1 flex-col\">\n        {/* navbar stub (453:3469, bg #07070D) */}\n        <header className=\"flex h-[6.1875rem] flex-none items-center justify-end pr-10\">\n          <div className=\"flex items-center gap-2\">\n            <span className=\"text-[2rem] font-semibold text-white\">12</span>\n            <span className=\"text-[1.625rem] text-white\">Credit</span>\n          </div>\n        </header>\n\n        {/* Content stub \u00e2\u20ac\u201d 775px article, real Figma copy */}\n        <article className=\"w-full max-w-[48.4375rem] px-10 pb-24\">\n          <h1 className=\"text-[2.25rem] font-extrabold leading-[3.25rem] tracking-[-0.0675rem] text-white\">\n            Privacy Policy\n          </h1>\n          <p className=\"mt-6 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n            At VocalMask we respect your privacy and are committed to\n            protecting your personal data. This policy explains how we handle\n            your information when you use our AI-powered personalized\n            children&apos;s song generation services.\n          </p>\n          <p className=\"mt-6 text-[0.875rem] text-[#B3B3BD]\">\n            Last updated: April 30, 2026\n          </p>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              What are cookies\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              Welcome to VocalMask (vocalmask.com). We are committed to\n              protecting your privacy and ensuring the security of your\n              personal information. This privacy policy explains how we\n              collect, use, store, and protect your data when you use our\n              AI-powered personalized children&apos;s song generation\n              services.\n            </p>\n          </section>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              Why we use cookies\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              At VocalMask, cookies help us deliver personalized experiences,\n              maintain your session security, and continuously improve our\n              AI-powered song generation services based on user interactions.\n            </p>\n          </section>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              Types of Cookies We Use\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              We use different types of cookies to provide and improve our\n              services.\n            </p>\n            <h3 className=\"mt-6 text-[1.125rem] font-semibold text-white\">\n              Essential cookies\n            </h3>\n            <p className=\"mt-2 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              User authentication and session management, security and fraud\n              prevention, basic site navigation and functionality, load\n              balancing and performance.\n            </p>\n            <h3 className=\"mt-6 text-[1.125rem] font-semibold text-white\">\n              Analytics cookies\n            </h3>\n            <p className=\"mt-2 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              Usage patterns and popular features, performance monitoring and\n              optimization, error tracking and bug identification, service\n              improvement insights.\n            </p>\n          </section>\n\n          <section className=\"mt-12\">\n            <h2 className=\"text-[1.5rem] font-bold text-white\">\n              Contact us about cookies\n            </h2>\n            <p className=\"mt-4 text-[1rem] leading-[1.5rem] text-[#DEDEE5]\">\n              If you have questions about our cookie usage, contact us at\n              support@vocalmask.com. We respond to cookie-related inquiries\n              within 24 hours.\n            </p>\n          </section>\n        </article>\n      </div>\n    </main>\n  );\n}\n"}], "grading": null}, {"id": "eval-3-footer-fix-with_skill", "prompt": "The bottom member card on /cookies-policy looks off \u00e2\u20ac\u201d the 3-dots circle hugs the right edge. Fix the footer padding and prove it with a narrowed pixel-diff on just the footer region.", "eval_id": 3, "outputs": [{"name": "member-footer.tsx", "type": "text", "content": "/** Fixed member footer \u00e2\u20ac\u201d Figma Cookie Policy Page Frame 42 (453:3459).\n *  225x64.8, bg #1A1A23, radius 89.1. Inner Frame 40 is 203.4 wide, i.e.\n *  10.8px inset on BOTH sides (225 - 203.4 = 21.6 / 2). The 3-dots pill\n *  (sidebar-more.svg, 453:3465 GROUP 79.2x28.8, pill #25252C + 3 dots\n *  #DFDFE6) hugged the right edge when the trailing inset was missing.\n *  Fix: symmetric pl + pr of 10.8px = 0.675rem (px/16). Extracted verbatim\n *  from components/app-sidebar.tsx lines 132-157; no other changes. */\n\nexport default function MemberFooter() {\n  return (\n    <div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">\n      <img\n        src=\"/figma/sidebar-avatar.png\"\n        alt=\"\"\n        width={43}\n        height={43}\n        className=\"h-[2.7rem] w-[2.7rem] flex-none rounded-full object-cover\"\n      />\n      <div className=\"ml-[0.675rem] flex min-w-0 flex-col\">\n        <span className=\"truncate text-[1.0125rem] font-semibold leading-[1.215rem] text-[#F0F0F7]\">\n          Member\n        </span>\n        <span className=\"text-[0.7875rem] font-medium leading-[0.945rem] text-[#B3B3BD]\">\n          Trial\n        </span>\n      </div>\n      <img\n        src=\"/figma/sidebar-more.svg\"\n        alt=\"\"\n        width={79}\n        height={29}\n        className=\"ml-auto h-[1.8rem] w-[4.95rem] flex-none\"\n      />\n    </div>\n  );\n}\n"}], "grading": null}, {"id": "eval-3-footer-fix-without_skill", "prompt": "The bottom member card on /cookies-policy looks off \u00e2\u20ac\u201d the 3-dots circle hugs the right edge. Fix the footer padding and prove it with a narrowed pixel-diff on just the footer region.", "eval_id": 3, "outputs": [{"name": "member-footer.tsx", "type": "text", "content": "/** Fixed member footer \u00e2\u20ac\u201d 1:1 of Figma Frame 42 (225 \u00c3\u2014 64.8, bg #1A1A23, radius 89.1).\n *  Inner Frame 40 is 203.4 wide: 10.8px (0.675rem) inset on BOTH sides.\n *  Fix: symmetric pl + pr so the 3-dots circle no longer hugs the right edge.\n *  Extracted from components/app-sidebar.tsx \u00e2\u20ac\u201d drop-in snippet.\n */\n\nexport default function MemberFooter() {\n  return (\n    <div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">\n      <img\n        src=\"/figma/sidebar-avatar.png\"\n        alt=\"\"\n        width={43}\n        height={43}\n        className=\"h-[2.7rem] w-[2.7rem] flex-none rounded-full object-cover\"\n      />\n      <div className=\"ml-[0.675rem] flex min-w-0 flex-col\">\n        <span className=\"truncate text-[1.0125rem] font-semibold leading-[1.215rem] text-[#F0F0F7]\">\n          Member\n        </span>\n        <span className=\"text-[0.7875rem] font-medium leading-[0.945rem] text-[#B3B3BD]\">\n          Trial\n        </span>\n      </div>\n      <img\n        src=\"/figma/sidebar-more.svg\"\n        alt=\"\"\n        width={79}\n        height={29}\n        className=\"ml-auto h-[1.8rem] w-[4.95rem] flex-none\"\n      />\n    </div>\n  );\n}\n"}], "grading": null}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"metadata": {"skill_name": "figma-to-nextjs", "skill_path": "C:\\Users\\ACER 3\\Desktop\\vocalmorph-test\\figma-to-nextjs", "executor_model": "<model-name>", "analyzer_model": "<model-name>", "timestamp": "2026-10-12T12:41:05Z", "evals_run": [1, 2, 3], "runs_per_configuration": 3}, "runs": [{"eval_id": 1, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 5, "failed": 0, "total": 5, "time_seconds": 0.0, "tokens": 12073, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "page.tsx exports Next.js metadata with title and description", "passed": true, "evidence": "Found in page.tsx: 'export const metadata: Metadata = {'"}, {"text": "login-form.tsx is a 'use client' component with console.log stub handlers", "passed": true, "evidence": "Found in login-form.tsx: ''use client';'"}, {"text": "Decorative panel is fixed 50vw and hidden below 1420px", "passed": true, "evidence": "Found in page.tsx: 'className=\"fixed right-0 top-0 hidden h-screen w-[50vw] flex-none items-center justify-center overflow-hidden bg-[#1A1922] min-[1420px]:flex\"'"}, {"text": "Form documents the Frame 83 'See other options' exclusion in code", "passed": true, "evidence": "Found in login-form.tsx: 'Frame 83 \"See other options\" is an excluded overlapping variant (manifest) \u2014 Google only. */}'"}, {"text": "Transcript names the pixel-diff-login.mjs gate script", "passed": true, "evidence": "Found in transcript.md: '- `node scripts/pixel-diff-login.mjs` (Playwright 1440x850, DSF 2 from manifest,'"}], "notes": ["Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."]}, {"eval_id": 2, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 4, "failed": 0, "total": 4, "time_seconds": 0.0, "tokens": 15392, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Route page keeps 48px sides with a sticky full-height sidebar wrapper", "passed": true, "evidence": "Found in page.tsx: '<main className=\"flex min-h-screen w-full bg-[#07070D] px-[3rem] text-white [color-scheme:dark]\">'"}, {"text": "Sidebar reuses verbatim /figma/sidebar asset refs", "passed": true, "evidence": "Found in app-sidebar.tsx: '*  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).'"}, {"text": "Transcript cites the sidebar-region gate script and its x=48 crop", "passed": true, "evidence": "Found in transcript.md: '(node 453:3384, Frame 46 266x850 @ x=48, DSF 2), `scripts/pixel-diff-cookies.mjs`'"}, {"text": "Transcript maps the work to SKILL.md sections", "passed": true, "evidence": "Found in transcript.md: '1. Read `figma-to-nextjs/SKILL.md` in full (workflow \u00a7\u00a71\u20137, pitfalls, examples).'"}], "notes": ["Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."]}, {"eval_id": 3, "configuration": "with_skill", "run_number": 1, "result": {"pass_rate": 1.0, "passed": 4, "failed": 0, "total": 4, "time_seconds": 0.0, "tokens": 5300, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Footer snippet applies symmetric 10.8px (0.675rem) left and right insets", "passed": true, "evidence": "Found in member-footer.tsx: '<div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">'"}, {"text": "Transcript derives the exact tenth-pixel footer band 756.4 to 821.2", "passed": true, "evidence": "Found in transcript.md: 'css y-band `[850 - 28.8 - 64.8, 850 - 28.8]` = `[756.4, 821.2]` \u2192'"}, {"text": "Transcript states PASS as percent < 0.01 with the pixelmatch threshold", "passed": true, "evidence": "Found in transcript.md: '`percent = mismatched / (w*h)`; **PASS iff `percent < 0.01`**.'"}, {"text": "Transcript lists pre-gate verification (tsc, lint, build) before claiming PASS", "passed": true, "evidence": "Found in transcript.md: '6. Pre-gate per skill: `tsc`, lint changed files, `npm run build` before claiming PASS.'"}], "notes": ["Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."]}, {"eval_id": 1, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.6, "passed": 3, "failed": 2, "total": 5, "time_seconds": 0.0, "tokens": 10285, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "page.tsx exports Next.js metadata with title and description", "passed": true, "evidence": "Found in page.tsx: 'export const metadata: Metadata = {'"}, {"text": "login-form.tsx is a 'use client' component with console.log stub handlers", "passed": true, "evidence": "Found in login-form.tsx: ''use client';'"}, {"text": "Decorative panel is fixed 50vw and hidden below 1420px", "passed": true, "evidence": "Found in page.tsx: 'className=\"fixed right-0 top-0 hidden h-screen w-[50vw] flex-none items-center justify-center overflow-hidden bg-[#1A1922] min-[1420px]:flex\"'"}, {"text": "Form documents the Frame 83 'See other options' exclusion in code", "passed": false, "evidence": "login-form.tsx missing from login-form.tsx: 'See other options'"}, {"text": "Transcript names the pixel-diff-login.mjs gate script", "passed": false, "evidence": "transcript.md missing from transcript.md: 'pixel-diff-login'"}], "notes": ["Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."]}, {"eval_id": 2, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.5, "passed": 2, "failed": 2, "total": 4, "time_seconds": 0.0, "tokens": 13673, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Route page keeps 48px sides with a sticky full-height sidebar wrapper", "passed": true, "evidence": "Found in page.tsx: '<main className=\"flex min-h-screen w-full bg-[#07070D] px-[3rem] text-white [color-scheme:dark]\">'"}, {"text": "Sidebar reuses verbatim /figma/sidebar asset refs", "passed": true, "evidence": "Found in app-sidebar.tsx: '*  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).'"}, {"text": "Transcript cites the sidebar-region gate script and its x=48 crop", "passed": false, "evidence": "transcript.md missing from transcript.md: 'pixel-diff-cookies'"}, {"text": "Transcript maps the work to SKILL.md sections", "passed": false, "evidence": "transcript.md missing from transcript.md: 'SKILL.md'"}], "notes": ["Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."]}, {"eval_id": 3, "configuration": "without_skill", "run_number": 1, "result": {"pass_rate": 0.25, "passed": 1, "failed": 3, "total": 4, "time_seconds": 0.0, "tokens": 4549, "tool_calls": 0, "errors": 0}, "expectations": [{"text": "Footer snippet applies symmetric 10.8px (0.675rem) left and right insets", "passed": true, "evidence": "Found in member-footer.tsx: '<div className=\"mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]\">'"}, {"text": "Transcript derives the exact tenth-pixel footer band 756.4 to 821.2", "passed": false, "evidence": "transcript.md missing from transcript.md: '756.4', '821.2'"}, {"text": "Transcript states PASS as percent < 0.01 with the pixelmatch threshold", "passed": false, "evidence": "transcript.md missing from transcript.md: 'percent < 0.01'"}, {"text": "Transcript lists pre-gate verification (tsc, lint, build) before claiming PASS", "passed": false, "evidence": "transcript.md missing from transcript.md: 'tsc', 'lint', 'build'"}], "notes": ["Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."]}], "run_summary": {"with_skill": {"pass_rate": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}, "time_seconds": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0}, "tokens": {"mean": 10921.6667, "stddev": 5143.5681, "min": 5300, "max": 15392}}, "without_skill": {"pass_rate": {"mean": 0.45, "stddev": 0.1803, "min": 0.25, "max": 0.6}, "time_seconds": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0}, "tokens": {"mean": 9502.3333, "stddev": 4612.0786, "min": 4549, "max": 13673}}, "delta": {"pass_rate": "+0.55", "time_seconds": "+0.0", "tokens": "+1419"}}, "notes": []}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

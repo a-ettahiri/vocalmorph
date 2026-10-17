@@ -1,0 +1,52 @@
+{
+  "expectations": [
+    {
+      "text": "page.tsx exports Next.js metadata with title and description",
+      "passed": true,
+      "evidence": "Found in page.tsx: 'export const metadata: Metadata = {'"
+    },
+    {
+      "text": "login-form.tsx is a 'use client' component with console.log stub handlers",
+      "passed": true,
+      "evidence": "Found in login-form.tsx: ''use client';'"
+    },
+    {
+      "text": "Decorative panel is fixed 50vw and hidden below 1420px",
+      "passed": true,
+      "evidence": "Found in page.tsx: 'className=\"fixed right-0 top-0 hidden h-screen w-[50vw] flex-none items-center justify-center overflow-hidden bg-[#1A1922] min-[1420px]:flex\"'"
+    },
+    {
+      "text": "Form documents the Frame 83 'See other options' exclusion in code",
+      "passed": false,
+      "evidence": "login-form.tsx missing from login-form.tsx: 'See other options'"
+    },
+    {
+      "text": "Transcript names the pixel-diff-login.mjs gate script",
+      "passed": false,
+      "evidence": "transcript.md missing from transcript.md: 'pixel-diff-login'"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 2,
+    "total": 5,
+    "pass_rate": 0.6
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 10285,
+    "transcript_chars": 3546
+  },
+  "timing": {},
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Executor tool-call counts unavailable in this harness; only output/transcript sizes measured."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  }
+}
