@@ -4,7 +4,7 @@
  *  from public/figma/topbar-coin.svg via plain <img>. */
 export default function TopBar() {
   return (
-    <header className="sticky top-0 z-[100] flex h-[6.1875rem] w-full flex-none items-center justify-end bg-[#07070D]/60 px-[3rem] backdrop-blur-[9px]">
+    <header className="sticky top-0 z-[100] flex h-[6.1875rem] w-full flex-none items-center justify-end bg-[#07070D]/60 px-[3rem] backdrop-blur-[0.5625rem]">
       <div className="flex h-[3.09375rem] w-[9.3855rem] flex-none items-center gap-[0.225rem] rounded-full bg-[#1A1A23] px-[0.9rem] py-[0.45rem]">
         <span className="text-[1.8rem] font-semibold leading-[2.16rem] tracking-[-0.036rem] text-[#F0F0F7]">
           12

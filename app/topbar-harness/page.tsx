@@ -4,7 +4,7 @@ import TopBar from '@/components/topbar';
 export default function TopBarHarness() {
   return (
     <main className="flex min-h-screen w-full items-start justify-center bg-black">
-      <div className="w-[1078px] flex-none">
+      <div className="w-[67.375rem] flex-none">
         <TopBar />
       </div>
     </main>

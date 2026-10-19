@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 
 type Status = 'idle' | 'error';
@@ -95,13 +96,13 @@ export default function RegisterForm() {
         {/* Legal — 474x17, #C8C8D1, 14px SemiBold, ls -0.7, center */}
         <p className="w-full text-center text-[0.875rem] font-semibold leading-[1.0625rem] tracking-[-0.0438rem] text-[#C8C8D1]">
           By continuing, you agree to the app{' '}
-          <a href="#" className="text-[#C8C8D1] hover:underline">
+          <Link href="/terms-of-service" className="text-[#C8C8D1] hover:underline">
             Terms of Service
-          </a>{' '}
+          </Link>{' '}
           and{' '}
-          <a href="#" className="text-[#C8C8D1] hover:underline">
+          <Link href="/privacy-policy" className="text-[#C8C8D1] hover:underline">
             Privacy Policy
-          </a>
+          </Link>
           .
         </p>
       </div>

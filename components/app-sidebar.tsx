@@ -2,6 +2,7 @@
  *  Inner Frame 44: 225px wide, 850 tall, pt/pb 28.8. Byte-identical SVGs
  *  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).
  *  Frame 45 (vis=false rail) is contamination — never wired here. */
+import Link from 'next/link';
 
 const NAV = [
   { label: 'Home', href: '/', icon: '/figma/sidebar-home.svg', active: false, textClass: 'font-bold text-[#F0F0F7]' },
@@ -32,7 +33,7 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
           {/* Frame 36 — nav stack, gap 28.8, mt 36 */}
           <div className="mt-[2.25rem] flex flex-col gap-[1.8rem]">
             {/* Generate pill — 187.2x50.8, bg #F0F0F7, radius 89.1 */}
-            <a
+            <Link
               href="/generate"
               className="flex h-[3.175rem] w-[11.7rem] flex-none items-center justify-center gap-[0.45rem] rounded-full bg-[#F0F0F7] px-[2.7rem] py-[0.9rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
@@ -46,13 +47,13 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
               <span className="text-[1.125rem] font-bold leading-[1.35rem] tracking-[-0.0225rem] text-[#07070D]">
                 Generate
               </span>
-            </a>
+            </Link>
 
             {/* Frame 30 — page links, gap 14.4 */}
             <nav aria-label="Pages" className="flex flex-col gap-[0.9rem]">
               {NAV.map((item) =>
                 item.active || active === item.label ? (
-                  <a
+                  <Link
                     key={item.label}
                     href={item.href}
                     aria-current="page"
@@ -70,9 +71,9 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
                     >
                       {item.label}
                     </span>
-                  </a>
+                  </Link>
                 ) : (
-                  <a
+                  <Link
                     key={item.label}
                     href={item.href}
                     className="flex min-h-[2.925rem] flex-none items-center pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
@@ -89,7 +90,7 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
                     >
                       {item.label}
                     </span>
-                  </a>
+                  </Link>
                 ),
               )}
             </nav>
@@ -101,7 +102,7 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
           {/* Group 10 — 225x129.6: art (IMAGE fill, CROP, transform
               [[0.9094516,0,~0],[0,0.34922943,0.19610037]]) + button.
               Crop window u[0,0.909] v[0.196,0.545] stretched to 225x86.4:
-              img 247.4px sq. offset top -48.5px. */}
+              img 15.4625rem sq. offset top -3.03125rem. */}
           <div className="relative w-[14.0625rem]">
             <div className="relative h-[5.4rem] w-[14.0625rem] overflow-hidden rounded-t-[1.5rem]">
               <img
@@ -119,18 +120,18 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
               height={36}
               className="absolute left-[0.9rem] top-[0.9rem] h-[2.25rem] w-[2.25rem]"
             />
-            <a
+            <Link
               href="/pro"
               className="flex h-[2.7rem] w-[14.0625rem] flex-none items-center justify-center rounded-b-[1.5rem] bg-[#25252C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <span className="text-[1.0125rem] font-semibold leading-[1.215rem] tracking-[-0.02025rem] text-[#F0F0F7]">
                 Upgrade to Pro
               </span>
-            </a>
+            </Link>
           </div>
 
           {/* Frame 42 — member footer, 225x64.8, bg #1A1A23, radius 89.1.
-              Inner Frame 40 is 203.4 wide: 10.8px inset on BOTH sides. */}
+              Inner Frame 40 is 203.4 wide: 0.675rem inset on BOTH sides. */}
           <div className="mt-[0.9rem] flex h-[4.05rem] w-[14.0625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] pr-[0.675rem]">
             <img
               src="/figma/sidebar-avatar.png"

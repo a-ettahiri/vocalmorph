@@ -67,7 +67,7 @@ export default function BottomBar({ threshold = 80 }: { threshold?: number }) {
         onClick={toTop}
         aria-label="Go to top"
         tabIndex={visible ? 0 : -1}
-        className={`pointer-events-auto absolute top-0 right-6 flex h-[4rem] w-[4rem] flex-none cursor-pointer items-center justify-center rounded-full border-[7.2px] border-[#07070D] bg-[#F0F0F7] transition-all duration-300 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+        className={`pointer-events-auto absolute top-0 right-6 flex h-[4rem] w-[4rem] flex-none cursor-pointer items-center justify-center rounded-full border-[0.45rem] border-[#07070D] bg-[#F0F0F7] transition-all duration-300 ease-in-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
           visible
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-2 opacity-0"
