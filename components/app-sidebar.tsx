@@ -1,8 +1,10 @@
+'use client';
 /** Shared app sidebar — 1:1 of Figma Cookie Policy Page Frame 46 (453:3415).
  *  Inner Frame 44: 225px wide, 850 tall, pt/pb 28.8. Byte-identical SVGs
  *  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).
  *  Frame 45 (vis=false rail) is contamination — never wired here. */
 import Link from 'next/link';
+import { openUpgradePopup } from '@/components/upgrade-popup';
 
 const NAV = [
   { label: 'Home', href: '/', icon: '/figma/sidebar-home.svg', active: false, textClass: 'font-bold text-[#F0F0F7]' },
@@ -120,14 +122,15 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
               height={36}
               className="absolute left-[0.9rem] top-[0.9rem] h-[2.25rem] w-[2.25rem]"
             />
-            <Link
-              href="/pro"
-              className="flex h-[2.7rem] w-[14.0625rem] flex-none items-center justify-center rounded-b-[1.5rem] bg-[#25252C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            <button
+              type="button"
+              onClick={openUpgradePopup}
+              className="flex h-[2.7rem] w-[14.0625rem] flex-none cursor-pointer items-center justify-center rounded-b-[1.5rem] bg-[#25252C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <span className="text-[1.0125rem] font-semibold leading-[1.215rem] tracking-[-0.02025rem] text-[#F0F0F7]">
                 Upgrade to Pro
               </span>
-            </Link>
+            </button>
           </div>
 
           {/* Frame 42 — member footer, 225x64.8, bg #1A1A23, radius 89.1.

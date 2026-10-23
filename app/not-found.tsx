@@ -1,5 +1,8 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import AppPageShell from '@/components/app-page-shell';
+
+export const metadata: Metadata = { title: 'Page Not Found' };
 
 /* 404 — Figma 1348:562 not-found, content 1350:944 450px centered in app shell.
  * Transcribed verbatim: title Inter-Bold 24 ls -0.48 lh 28.8 #9E9EA8,

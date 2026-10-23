@@ -56,7 +56,7 @@ export default function AppSidebarRail({ active = 'History' }: { active?: string
             {/* Frame 30 — nav rows, gap 16, mt 32 */}
             <nav aria-label="Pages" className="mt-[2rem] flex flex-col items-center gap-[1rem]">
               {RAIL_NAV.map((item) =>
-                item.active || active === item.label ? (
+                (('active' in item && item.active) || active === item.label) ? (
                   <a
                     key={item.label}
                     href={item.href}

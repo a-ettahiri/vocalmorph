@@ -1,0 +1,8 @@
+{
+  "percent": 0.015144271246782613,
+  "mismatched": 40292,
+  "threshold": 0.01,
+  "passed": false,
+  "url": "http://localhost:3000/library-harness",
+  "at": "2026-10-23T13:19:35.003Z"
+}

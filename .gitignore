@@ -45,3 +45,8 @@ next-env.d.ts
 
 # pixel-diff harness output
 .superpowers/
+.figma-export-cache/
+
+# figma export (ground truth zip + folder, never commit)
+*.zip
+figma-export/

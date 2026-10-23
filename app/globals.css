@@ -26,8 +26,8 @@ body {
 }
 
 /* Fluid root (coefficient rem method): 16px at 1440x850 Figma baseline.
-   1vw=14.4px, 1vh=8.5px, X=16/22.9=0.6987. Clamped max 18px so large
+   1vw=14.4px, 1vh=8.5px, X=16/22.9=0.6987. Clamped max 16px so large
    screens don't blow up; min 13px keeps small screens readable. */
 html {
-  font-size: clamp(13px, calc(0.6987vw + 0.6987vh), 18px);
+  font-size: clamp(13px, calc(0.6987vw + 0.6987vh), 16px);
 }

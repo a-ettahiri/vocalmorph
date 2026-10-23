@@ -1,0 +1,55 @@
+FRAME 593:4624 Frame 133 size=731.0700073242188x1268 origin=(22424,237)
+fills=[]
+593:4624|Frame 133|FRAME|rel=(0,0) 731.07x1268
+  607:568|Frame 159|FRAME|rel=(0,0) 731.07x52
+    591:4216|History|TEXT|rel=(0,0) 150x52 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1] font=Inter w=700 sz=43.19999694824219 lh=51.839996337890625 ls=-0.8639999389648437 align=LEFT chars='History'
+    607:564|Frame 157|INSTANCE|rel=(608.07,4.5) 123x43 fills=[SOLID rgba(0.10196078568696976,0.10196078568696976,0.13725490868091583,1) op=1]
+      I607:564;516:1388|Last Week|TEXT|rel=(624.07,16.5) 71x19 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1] font=Inter w=700 sz=16 lh=19.2 ls=-0.32 align=CENTER chars='Category'
+      I607:564;516:1391|Vector|VECTOR|rel=(703.07,22.5) 12x7 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1] radius=0
+  591:4207|Frame 132|FRAME|rel=(0,84) 731.07x1184
+    591:4049|Frame 129|FRAME|rel=(0,84) 731.07x1184
+      591:4218|TODAY|TEXT|rel=(0,84) 731.07x24 fills=[SOLID rgba(0.7871999740600586,0.7871999740600586,0.8199999928474426,1) op=1] font=Inter w=400 sz=20 lh=24 ls=-0.8 align=CENTER chars='TODAY'
+      591:3944|Frame 127|FRAME|rel=(0,129.6) 731.07x268.4 fills=[SOLID rgba(0.10196078568696976,0.10196078568696976,0.13725490868091583,1) op=1]
+        591:3945|Frame 125|FRAME|rel=(10.8,140.4) 709.47x180
+          591:3946|Rectangle 72|RECTANGLE|rel=(10.8,140.4) 180x180 fills=[IMAGE {"type": "IMAGE", "visible": true, "opacity": 1, "blendMode": "NORMAL", "scaleMode": "FILL", "imageRef": "2d4dc78ba5ec52fdce84b2f0578cf9e787745a5a", "imageTransform": [[1, 0, 0], [0, 1, 0]]}] radius=4
+          591:3947|Frame 124|FRAME|rel=(212.4,147.99) 507.87x164.82
+            591:3996|Frame 128|FRAME|rel=(212.4,147.99) 507.87x52
+            591:3949|audio pause|FRAME|rel=(212.4,213.99) 507.87x98.82
+        591:4223|Frame 35|FRAME|rel=(10.8,336.4) 709.47x50.8 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1]
+          591:4229|Vector|VECTOR|rel=(310.54,352.8) 16x18 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] radius=0
+          591:4225|Download|TEXT|rel=(334.54,350.8) 86x22 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] font=Inter w=700 sz=18 lh=21.599999999999998 ls=-0.36 align=CENTER chars='Download'
+      593:4459|Frame 128|FRAME|rel=(0,419.6) 731.07x268.4 fills=[SOLID rgba(0.10196078568696976,0.10196078568696976,0.13725490868091583,1) op=1]
+        593:4460|Frame 125|FRAME|rel=(10.8,430.4) 709.47x180
+          593:4461|Rectangle 72|RECTANGLE|rel=(10.8,430.4) 180x180 fills=[IMAGE {"type": "IMAGE", "visible": true, "opacity": 1, "blendMode": "NORMAL", "scaleMode": "FILL", "imageRef": "2d4dc78ba5ec52fdce84b2f0578cf9e787745a5a", "imageTransform": [[1, 0, 0], [0, 1, 0]]}] radius=4
+          593:4462|Frame 124|FRAME|rel=(212.4,437.99) 507.87x164.82
+            593:4463|Frame 128|FRAME|rel=(212.4,437.99) 507.87x52
+            593:4466|audio pause|FRAME|rel=(212.4,503.99) 507.87x98.82
+        593:4511|Frame 35|FRAME|rel=(10.8,626.4) 709.47x50.8 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1]
+          593:4512|Vector|VECTOR|rel=(310.54,642.8) 16x18 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] radius=0
+          593:4513|Download|TEXT|rel=(334.54,640.8) 86x22 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] font=Inter w=700 sz=18 lh=21.599999999999998 ls=-0.36 align=CENTER chars='Download'
+      593:5271|Frame 129|FRAME|rel=(0,709.6) 731.07x268.4 fills=[SOLID rgba(0.10196078568696976,0.10196078568696976,0.13725490868091583,1) op=1]
+        593:5272|Frame 125|FRAME|rel=(10.8,720.4) 709.47x180
+          593:5273|Rectangle 72|RECTANGLE|rel=(10.8,720.4) 180x180 fills=[IMAGE {"type": "IMAGE", "visible": true, "opacity": 1, "blendMode": "NORMAL", "scaleMode": "FILL", "imageRef": "2d4dc78ba5ec52fdce84b2f0578cf9e787745a5a", "imageTransform": [[1, 0, 0], [0, 1, 0]]}] radius=4
+          593:5274|Frame 124|FRAME|rel=(212.4,727.99) 507.87x164.82
+            593:5275|Frame 128|FRAME|rel=(212.4,727.99) 507.87x52
+            593:5278|audio pause|FRAME|rel=(212.4,793.99) 507.87x98.82
+        593:5323|Frame 35|FRAME|rel=(10.8,916.4) 709.47x50.8 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1]
+          593:5324|Vector|VECTOR|rel=(310.54,932.8) 16x18 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] radius=0
+          593:5325|Download|TEXT|rel=(334.54,930.8) 86x22 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] font=Inter w=700 sz=18 lh=21.599999999999998 ls=-0.36 align=CENTER chars='Download'
+      593:5326|Frame 130|FRAME|rel=(0,999.6) 731.07x268.4 fills=[SOLID rgba(0.10196078568696976,0.10196078568696976,0.13725490868091583,1) op=1]
+        593:5327|Frame 125|FRAME|rel=(10.8,1010.4) 709.47x180
+          593:5328|Rectangle 72|RECTANGLE|rel=(10.8,1010.4) 180x180 fills=[IMAGE {"type": "IMAGE", "visible": true, "opacity": 1, "blendMode": "NORMAL", "scaleMode": "FILL", "imageRef": "2d4dc78ba5ec52fdce84b2f0578cf9e787745a5a", "imageTransform": [[1, 0, 0], [0, 1, 0]]}] radius=4
+          593:5329|Frame 124|FRAME|rel=(212.4,1017.99) 507.87x164.82
+            593:5330|Frame 128|FRAME|rel=(212.4,1017.99) 507.87x52
+            593:5333|audio pause|FRAME|rel=(212.4,1083.99) 507.87x98.82
+        593:5378|Frame 35|FRAME|rel=(10.8,1206.4) 709.47x50.8 fills=[SOLID rgba(0.9409000277519226,0.9409000277519226,0.9700000286102295,1) op=1]
+          593:5379|Vector|VECTOR|rel=(310.54,1222.8) 16x18 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] radius=0
+          593:5380|Download|TEXT|rel=(334.54,1220.8) 86x22 fills=[SOLID rgba(0.027450980618596077,0.027450980618596077,0.05098039284348488,1) op=1] font=Inter w=700 sz=18 lh=21.599999999999998 ls=-0.36 align=CENTER chars='Download'
+
+ASSETMAP framelinkExport.assets:
+  593:4624 -> {'image': 'saas_app_20261022-135209.assets/node_593_4624.png', 'imageScale': 2}
+  I607:564;516:1391 -> {'svg': 'saas_app_20261022-135209.assets/icon_I607_564_516_1391.svg'}
+  591:3949 -> {'svg': 'saas_app_20261022-135209.assets/icon_591_3949.svg'}
+  591:4229 -> {'svg': 'saas_app_20261022-135209.assets/icon_591_4229.svg'}
+  593:4466 -> {'svg': 'saas_app_20261022-135209.assets/icon_593_4466.svg'}
+  593:4512 -> {'svg': 'saas_app_20261022-135209.assets/icon_593_4512.svg'}
