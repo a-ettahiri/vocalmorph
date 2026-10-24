@@ -1,0 +1,33 @@
+{
+  "completedTurns": 1,
+  "endedAt": "2026-10-24T13:46:17.767Z",
+  "failedTurns": 0,
+  "harness": "ori",
+  "lastEventType": "turn.succeeded",
+  "runIds": [
+    {
+      "cwd": "C:\\Users\\ACER 3\\Desktop\\vocalmorph-test",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "prompt": "what model are you",
+      "runId": "74123994-62a1-4c5e-a0dd-cd334e532365",
+      "source": {
+        "surface": "code"
+      }
+    }
+  ],
+  "sessionId": "ccde8f80-34b6-4834-80dd-e51a49e91d88",
+  "startedAt": "2026-10-24T13:46:14.627Z",
+  "usage": {
+    "cacheCreationTokens": 0,
+    "cacheReadTokens": 0,
+    "contextTokens": 6615,
+    "costUsd": 0.0006624479999999999,
+    "generationIds": [
+      "gen-1792849575-rIdS4TO9B6DN20aNofH8",
+      "gen-dec-1792849575-KzyMEKCdRFXXkKxaE8xP",
+      "gen-dec-1792849575-Uy1OPq5pUs4iTuJO1tKE"
+    ],
+    "inputTokens": 9109,
+    "outputTokens": 310
+  }
+}

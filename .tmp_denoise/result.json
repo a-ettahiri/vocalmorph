@@ -1,0 +1,8 @@
+{
+  "percent": 0.010760239217107647,
+  "mismatched": 28500,
+  "threshold": 0.01,
+  "passed": false,
+  "url": "http://localhost:3000/de-noise-harness",
+  "at": "2026-10-24T19:41:07.419Z"
+}

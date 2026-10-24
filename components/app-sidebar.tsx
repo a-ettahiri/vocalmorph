@@ -4,17 +4,24 @@
  *  from public/figma/sidebar-*. Active row: History (#1A1A23 pill).
  *  Frame 45 (vis=false rail) is contamination — never wired here. */
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { openUpgradePopup } from '@/components/upgrade-popup';
+import { useNavPending } from '@/components/app-nav-pending';
 
 const NAV = [
-  { label: 'Home', href: '/', icon: '/figma/sidebar-home.svg', active: false, textClass: 'font-bold text-[#F0F0F7]' },
-  { label: 'Search', href: '/search', icon: '/figma/sidebar-search.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },
-  { label: 'Library', href: '/library', icon: '/figma/sidebar-library.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },
-  { label: 'History', href: '/history', icon: '/figma/sidebar-history.svg', active: true, textClass: 'font-medium text-[#F0F0F7]' },
-  { label: 'Support', href: '/support', icon: '/figma/sidebar-support.svg', active: false, textClass: 'font-medium text-[#C9C9D1]' },
+  { label: 'Home', href: '/', icon: '/figma/sidebar-home-line.svg', iconActiveSrc: '/figma/sidebar-home.svg', active: false, iconClass: 'brightness-[0.84] group-hover:brightness-100', iconActiveClass: '' },
+  { label: 'Search', href: '/search', icon: '/figma/sidebar-search.svg', iconActiveSrc: '/figma/sidebar-search.svg', active: false, iconClass: 'group-hover:brightness-[1.19]', iconActiveClass: 'brightness-[1.19]' },
+  { label: 'Library', href: '/library', icon: '/figma/sidebar-library.svg', iconActiveSrc: '/figma/sidebar-library-solid.svg', active: false, iconClass: 'scale-[0.85] group-hover:brightness-[1.19]', iconActiveClass: 'scale-[0.85] brightness-[1.11]' },
+  { label: 'History', href: '/history', icon: '/figma/sidebar-history.svg', iconActiveSrc: '/figma/sidebar-history-solid.svg', active: false, iconClass: 'brightness-[0.84] group-hover:brightness-100', iconActiveClass: '' },
+  { label: 'Support', href: '/support', icon: '/figma/sidebar-support.svg', iconActiveSrc: '/figma/sidebar-support.svg', active: false, iconClass: 'group-hover:brightness-[1.19]', iconActiveClass: 'brightness-[1.19]' },
 ] as const;
 
-export default function AppSidebar({ active = 'History' }: { active?: string }) {
+export default function AppSidebar({ active = '' }: { active?: string }) {
+  const { startPending } = useNavPending();
+  const pathname = usePathname();
+  const navTo = (href: string) => {
+    if (href !== pathname) startPending();
+  };
   return (
     <aside
       aria-label="Primary"
@@ -37,6 +44,7 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
             {/* Generate pill — 187.2x50.8, bg #F0F0F7, radius 89.1 */}
             <Link
               href="/generate"
+              onClick={() => navTo('/generate')}
               className="flex h-[3.175rem] w-[11.7rem] flex-none items-center justify-center gap-[0.45rem] rounded-full bg-[#F0F0F7] px-[2.7rem] py-[0.9rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <img
@@ -53,24 +61,25 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
 
             {/* Frame 30 — page links, gap 14.4 */}
             <nav aria-label="Pages" className="flex flex-col gap-[0.9rem]">
-              {NAV.map((item) =>
-                item.active || active === item.label ? (
+              {NAV.map((item) => {
+                const isActive =
+                  item.active || active === item.label || pathname === item.href;
+                return isActive ? (
                   <Link
                     key={item.label}
                     href={item.href}
+                    onClick={() => navTo(item.href)}
                     aria-current="page"
                     className="flex h-[2.7675rem] w-[8.7625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <img
-                      src={item.icon}
+                      src={item.iconActiveSrc}
                       alt=""
                       width={26}
                       height={26}
-                      className="h-auto w-[1.575rem] flex-none"
+                      className={`h-[1.575rem] w-[1.575rem] flex-none object-contain ${item.iconActiveClass}`}
                     />
-                    <span
-                      className={`ml-[0.9rem] text-[1.125rem] leading-[1.35rem] tracking-[-0.0225rem] ${item.textClass}`}
-                    >
+                    <span className="ml-[0.9rem] text-[1.125rem] font-bold leading-[1.35rem] tracking-[-0.0225rem] text-[#F0F0F7]">
                       {item.label}
                     </span>
                   </Link>
@@ -78,23 +87,22 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
                   <Link
                     key={item.label}
                     href={item.href}
-                    className="flex min-h-[2.925rem] flex-none items-center pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    onClick={() => navTo(item.href)}
+                    className="group flex min-h-[2.925rem] w-[8.7625rem] flex-none items-center rounded-full pl-[0.675rem] transition-colors hover:bg-[#1A1A23] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <img
                       src={item.icon}
                       alt=""
                       width={26}
                       height={26}
-                      className="h-auto w-[1.575rem] flex-none"
+                      className={`h-[1.575rem] w-[1.575rem] flex-none object-contain transition-[filter] ${item.iconClass}`}
                     />
-                    <span
-                      className={`ml-[0.9rem] text-[1.125rem] leading-[1.35rem] tracking-[-0.0225rem] ${item.textClass}`}
-                    >
+                    <span className="ml-[0.9rem] text-[1.125rem] font-medium leading-[1.35rem] tracking-[-0.0225rem] text-[#C9C9D1] transition-colors group-hover:text-[#F0F0F7]">
                       {item.label}
                     </span>
                   </Link>
-                ),
-              )}
+                );
+              })}
             </nav>
           </div>
         </div>
@@ -105,8 +113,13 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
               [[0.9094516,0,~0],[0,0.34922943,0.19610037]]) + button.
               Crop window u[0,0.909] v[0.196,0.545] stretched to 225x86.4:
               img 15.4625rem sq. offset top -3.03125rem. */}
-          <div className="relative w-[14.0625rem]">
-            <div className="relative h-[5.4rem] w-[14.0625rem] overflow-hidden rounded-t-[1.5rem]">
+          <button
+            type="button"
+            onClick={openUpgradePopup}
+            aria-label="Upgrade to Pro"
+            className="relative block w-[14.0625rem] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <span className="relative block h-[5.4rem] w-[14.0625rem] overflow-hidden rounded-t-[1.5rem]">
               <img
                 src="/figma/sidebar-pro-bg.png"
                 alt=""
@@ -114,7 +127,7 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
                 height={384}
                 className="absolute left-0 top-[-3.0322rem] h-[15.4625rem] w-[15.4625rem] max-w-none flex-none"
               />
-            </div>
+            </span>
             <img
               src="/figma/sidebar-pro-crown.svg"
               alt=""
@@ -122,16 +135,12 @@ export default function AppSidebar({ active = 'History' }: { active?: string }) 
               height={36}
               className="absolute left-[0.9rem] top-[0.9rem] h-[2.25rem] w-[2.25rem]"
             />
-            <button
-              type="button"
-              onClick={openUpgradePopup}
-              className="flex h-[2.7rem] w-[14.0625rem] flex-none cursor-pointer items-center justify-center rounded-b-[1.5rem] bg-[#25252C] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
+            <span className="flex h-[2.7rem] w-[14.0625rem] flex-none items-center justify-center rounded-b-[1.5rem] bg-[#25252C]">
               <span className="text-[1.0125rem] font-semibold leading-[1.215rem] tracking-[-0.02025rem] text-[#F0F0F7]">
                 Upgrade to Pro
               </span>
-            </button>
-          </div>
+            </span>
+          </button>
 
           {/* Frame 42 — member footer, 225x64.8, bg #1A1A23, radius 89.1.
               Inner Frame 40 is 203.4 wide: 0.675rem inset on BOTH sides. */}
