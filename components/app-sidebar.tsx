@@ -70,7 +70,7 @@ export default function AppSidebar({ active = '' }: { active?: string }) {
                     href={item.href}
                     onClick={() => navTo(item.href)}
                     aria-current="page"
-                    className="flex h-[2.7675rem] w-[8.7625rem] flex-none items-center rounded-full bg-[#1A1A23] pl-[0.675rem] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="group flex min-h-[2.925rem] w-[8.7625rem] flex-none items-center rounded-full pl-[0.675rem] transition-colors hover:bg-[#1A1A23] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     <img
                       src={item.iconActiveSrc}
