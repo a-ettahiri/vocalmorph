@@ -1,8 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  allowedDevOrigins: [
+    "ais-dev-pn7kjgqs5mf657khxg5aoa-756843906523.europe-west2.run.app",
+    "ais-pre-pn7kjgqs5mf657khxg5aoa-756843906523.europe-west2.run.app",
+    "*.run.app",
+    "localhost:3000",
+    "localhost:8080",
+    "127.0.0.1:3000",
+    "127.0.0.1:8080",
+  ],
   /* config options here */
-  cacheComponents: true,
   async headers() {
     // Static design assets are content-stable (filenames change per export),
     // so browsers may cache them immutably: download once, never revalidate.
@@ -14,6 +23,7 @@ const nextConfig: NextConfig = {
       '/home/:path*',
       '/library/:path*',
       '/persona/:path*',
+      '/personas/:path*',
       '/voice-clone/:path*',
     ];
     return immutableDirs.map((source) => ({
@@ -26,10 +36,6 @@ const nextConfig: NextConfig = {
       ],
     }));
   },
-  experimental: {
-    agentUpgrade: "security",
-  },
-  partialPrefetching: true,
   turbopack: {
     rules: {
       "*.css": {

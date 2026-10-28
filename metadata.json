@@ -1,0 +1,8 @@
+{
+  "name": "VocalMorph",
+  "description": "AI-powered voice cloning and audio generation platform with studio-quality celebrity voices.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
